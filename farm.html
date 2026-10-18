@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#065f46">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="กสิกรรมพึ่งตน">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <title>แบบบันทึกบัญชีฟาร์ม - กสิกรรมไร้สารพิษและอาหาร</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- html2pdf.js for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Google Fonts (Sarabun) -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f7fee7;
+            color: #1c1917;
+        }
+        .bg-farm-gradient {
+            background: linear-gradient(135deg, #15803d 0%, #166534 50%, #365314 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #16a34a;
+            border-radius: 4px;
+        }
+        .page-break-avoid {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+<body class="bg-lime-50/50 min-h-screen flex flex-col">
+
+<div id="app" class="flex-grow flex flex-col relative">
+
+    <!-- Image Zoom Lightbox Modal -->
+    <div v-if="activeImageModal" class="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 cursor-pointer" @click="activeImageModal = null">
+        <div class="relative bg-white p-2 rounded-2xl max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl" @click.stop>
+            <button @click="activeImageModal = null" class="absolute top-3 right-3 bg-stone-800/80 hover:bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm z-10 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img :src="activeImageModal" class="max-w-full max-h-[80vh] object-contain rounded-xl">
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div v-if="toast.show" class="fixed bottom-5 right-5 z-50 bg-stone-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-emerald-500/40 text-xs sm:text-sm animate-bounce">
+        <i :class="toast.icon || 'fa-solid fa-circle-info'" class="text-emerald-400 text-lg"></i>
+        <span>{{ toast.message }}</span>
+    </div>
+
+    <header class="bg-farm-gradient text-white shadow-md no-print sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-white text-green-700 flex items-center justify-center text-xl font-bold shadow-md">
+                    <i class="fa-solid fa-wheat-awn"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold leading-tight">แบบบันทึกบัญชีฟาร์ม (กสิกรรมไร้สารพิษและอาหาร)</h1>
+                    <p class="text-xs text-lime-200 hidden sm:block">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ตามวิถีเศรษฐกิจพอเพียง</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 text-xs flex-wrap gap-y-1.5">
+                <button @click="confirmSample" class="bg-lime-800 hover:bg-lime-900 text-lime-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>ใส่ข้อมูลตัวอย่าง</span>
+                </button>
+                <button @click="exportWord" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
+                    <i class="fa-solid fa-file-word"></i> <span>บันทึก Word</span>
+                </button>
+                <button @click="exportPDF" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
+                    <i class="fa-solid fa-file-pdf"></i> <span>บันทึก PDF</span>
+                </button>
+                <button @click="exportJSON" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
+                    <i class="fa-solid fa-download"></i> <span class="hidden md:inline">สำรอง JSON</span>
+                </button>
+                <button @click="triggerImport" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
+                    <i class="fa-solid fa-upload"></i> <span class="hidden md:inline">นำเข้า</span>
+                </button>
+                <input type="file" ref="fileInput" class="hidden" accept=".json" @change="importJSON">
+            </div>
+        </div>
+    </header>
+
+    <nav class="bg-white border-b border-stone-200 sticky top-[58px] z-40 no-print shadow-sm overflow-x-auto custom-scrollbar">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-1 sm:space-x-2 whitespace-nowrap text-xs sm:text-sm font-medium py-2">
+            <button @click="currentTab = 'profile'" :class="tabClass('profile')">
+                <i class="fa-solid fa-id-card"></i> 1. ทะเบียนผู้บันทึก & ผังฟาร์ม
+            </button>
+            <button @click="currentTab = 'plots'" :class="tabClass('plots')">
+                <i class="fa-solid fa-layer-group text-emerald-600"></i> 2. จัดการแปลง & พืชที่ปลูก
+            </button>
+            <button @click="currentTab = 'activity'" :class="tabClass('activity')">
+                <i class="fa-solid fa-seedling text-green-600"></i> 3. กิจกรรมแปลง (มีแนบรูป)
+            </button>
+            <button @click="currentTab = 'harvest'" :class="tabClass('harvest')">
+                <i class="fa-solid fa-basket-shopping text-amber-600"></i> 4. เก็บเกี่ยว & ใช้ประโยชน์
+            </button>
+            <button @click="currentTab = 'reflections'" :class="tabClass('reflections')">
+                <i class="fa-solid fa-book-open text-indigo-600"></i> 5. ถอดบทเรียน & ครบทุกมิติ
+            </button>
+            <button @click="currentTab = 'analytics'" :class="tabClass('analytics')">
+                <i class="fa-solid fa-chart-pie text-teal-600"></i> 6. สรุปผล & สถิติ
+            </button>
+            <button @click="currentTab = 'preview'" :class="tabClass('preview')">
+                <i class="fa-solid fa-print text-amber-600"></i> ตัวอย่างแบบฟอร์มฉบับเต็ม
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 py-6 flex-grow w-full">
+
+        <!-- TAB 1: PROFILE & FARM PHILOSOPHY -->
+        <div v-show="currentTab === 'profile'" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-8">
+                <!-- Cover Banner Header -->
+                <div class="bg-gradient-to-r from-green-800 via-emerald-800 to-lime-900 rounded-2xl p-6 text-white mb-6 shadow-md relative overflow-hidden">
+                    <div class="relative z-10 max-w-3xl">
+                        <span class="inline-block bg-lime-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">หลักสูตรการเรียนรู้</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold">กสิกรรมไร้สารพิษและอาหารเพื่อเศรษฐกิจและสุขภาวะพึ่งตน</h2>
+                        <p class="text-sm text-lime-200 mt-1">ตามวิถีเศรษฐกิจพอเพียง • บันทึกข้อมูลการทำเกษตรเพื่อการเรียนรู้ พัฒนา และพึ่งตนอย่างยั่งยืน</p>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <h3 class="text-lg font-bold text-stone-800 border-b pb-2 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen text-green-700"></i> ข้อมูลผู้บันทึก & แปลงเกษตร
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-sm">
+                    <div>
+                        <label class="block font-medium text-stone-700 mb-1">ชื่อ - สกุล <span class="text-rose-500">*</span></label>
+                        <input type="text" v-model="profile.name" placeholder="นาย/นาง/นางสาว..." class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-stone-700 mb-1">วันที่เริ่มบันทึก</label>
+                        <input type="date" v-model="profile.startDate" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-stone-700 mb-1">ปีการปลูก (พ.ศ.)</label>
+                        <input type="text" v-model="profile.cropYear" placeholder="เช่น 2569" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block font-medium text-stone-700 mb-1">ที่อยู่แปลง / ที่พักอาศัย</label>
+                        <input type="text" v-model="profile.address" placeholder="บ้านเลขที่ หมู่ ตำบล อำเภอ จังหวัด..." class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-stone-700 mb-1">เบอร์โทรศัพท์ / Line ID</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" v-model="profile.phone" placeholder="เบอร์โทรศัพท์" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500">
+                            <input type="text" v-model="profile.lineId" placeholder="Line ID" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Farm Philosophy and Goals -->
+                <h3 class="text-lg font-bold text-stone-800 border-b pb-2 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-bullseye text-green-700"></i> ปรัชญา / เป้าหมายของแปลง
+                </h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6 text-sm">
+                    <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-lime-50" :class="{'border-green-600 bg-lime-50 font-semibold': profile.goals.safe}">
+                        <input type="checkbox" v-model="profile.goals.safe" class="w-4 h-4 text-green-600 rounded">
+                        <span><i class="fa-solid fa-shield-heart text-green-600"></i> ปลอดภัยเพื่อสุขภาพ</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-lime-50" :class="{'border-green-600 bg-lime-50 font-semibold': profile.goals.household}">
+                        <input type="checkbox" v-model="profile.goals.household" class="w-4 h-4 text-green-600 rounded">
+                        <span><i class="fa-solid fa-utensils text-amber-600"></i> บริโภคในครัวเรือน</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-lime-50" :class="{'border-green-600 bg-lime-50 font-semibold': profile.goals.share}">
+                        <input type="checkbox" v-model="profile.goals.share" class="w-4 h-4 text-green-600 rounded">
+                        <span><i class="fa-solid fa-hand-holding-heart text-rose-500"></i> ปลูกเพื่อแบ่งปัน</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-lime-50" :class="{'border-green-600 bg-lime-50 font-semibold': profile.goals.reduceCost}">
+                        <input type="checkbox" v-model="profile.goals.reduceCost" class="w-4 h-4 text-green-600 rounded">
+                        <span><i class="fa-solid fa-piggy-bank text-blue-600"></i> ลดต้นทุนการผลิต</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border rounded-xl cursor-pointer hover:bg-lime-50" :class="{'border-green-600 bg-lime-50 font-semibold': profile.goals.sell}">
+                        <input type="checkbox" v-model="profile.goals.sell" class="w-4 h-4 text-green-600 rounded">
+                        <span><i class="fa-solid fa-store text-emerald-600"></i> ปลูกเพื่อจำหน่าย</span>
+                    </label>
+                </div>
+
+                <!-- Land Area and Plant Types -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-stone-50 rounded-2xl mb-6 border border-stone-200 text-sm">
+                    <div>
+                        <h4 class="font-bold text-stone-800 mb-2">1. ภาพรวมลักษณะพื้นที่ปลูก</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.areaType.pots" class="rounded text-green-600">
+                                <span>ในกระถาง/ถุง/กระสอบ</span>
+                                <input type="number" v-model="profile.areaType.potsCount" placeholder="จำนวน" class="w-20 p-1 border rounded text-xs ml-auto"> ใบ
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.areaType.raisedBed" class="rounded text-green-600">
+                                <span>ยกแคร่</span>
+                                <input type="number" v-model="profile.areaType.raisedBedCount" placeholder="จำนวน" class="w-20 p-1 border rounded text-xs ml-auto"> แคร่
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.areaType.groundPlot" class="rounded text-green-600">
+                                <span>บนแปลงดิน</span>
+                                <input type="number" v-model="profile.areaType.groundPlotCount" placeholder="จำนวน" class="w-20 p-1 border rounded text-xs ml-auto"> แปลง
+                            </label>
+                            <div class="flex items-center gap-2 pt-2 border-t border-stone-200">
+                                <span class="font-medium">พื้นที่รวม:</span>
+                                <input type="text" v-model="profile.areaType.totalSize" placeholder="เช่น 2 งาน 50 ตร.ว. หรือ 1 ไร่" class="flex-grow p-1.5 border rounded-lg text-xs">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-stone-800 mb-2">2. สภาพแวดล้อมโดยรอบ</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.location.backyard" class="rounded text-green-600"> ข้างบ้าน / หลังบ้าน
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.location.condo" class="rounded text-green-600"> ระเบียงคอนโด
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.location.rooftop" class="rounded text-green-600"> ดาดฟ้า
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="profile.location.publicLand" class="rounded text-green-600"> พื้นที่ส่วนกลาง
+                            </label>
+                        </div>
+                        <div class="mt-3">
+                            <input type="text" v-model="profile.location.other" placeholder="ลักษณะอื่นๆ ระบุ..." class="w-full p-2 border border-stone-300 rounded-lg text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Farm Layout Drawing Canvas -->
+                <h3 class="text-lg font-bold text-stone-800 border-b pb-2 mb-3 flex items-center justify-between">
+                    <span><i class="fa-solid fa-map-location-dot text-green-700"></i> 3. แผนผังอย่างง่าย (วาดภาพพื้นที่ปลูก / แปลงปลูก)</span>
+                    <span class="text-xs font-normal text-stone-500"><i class="fa-solid fa-compass text-rose-600"></i> ทิศเหนือระบุอยู่ด้านบน</span>
+                </h3>
+                
+                <div class="bg-stone-100 p-4 rounded-2xl border border-stone-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3 no-print">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="font-bold">เครื่องมือวาด:</span>
+                            <button @click="canvasTool = 'pen'" :class="{'bg-green-700 text-white': canvasTool === 'pen'}" class="px-2.5 py-1 rounded-lg border bg-white shadow-sm">
+                                <i class="fa-solid fa-pen"></i> ดินสอ
+                            </button>
+                            <button @click="canvasTool = 'eraser'" :class="{'bg-green-700 text-white': canvasTool === 'eraser'}" class="px-2.5 py-1 rounded-lg border bg-white shadow-sm">
+                                <i class="fa-solid fa-eraser"></i> ยางลบ
+                            </button>
+                            <input type="color" v-model="canvasColor" class="w-8 h-8 rounded border cursor-pointer">
+                            <select v-model="canvasLineWidth" class="p-1 border rounded text-xs">
+                                <option value="2">เส้นเล็ก</option>
+                                <option value="5">เส้นกลาง</option>
+                                <option value="10">เส้นใหญ่</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <button @click="clearCanvas" class="bg-stone-200 hover:bg-stone-300 px-3 py-1 rounded-lg">
+                                <i class="fa-solid fa-rotate-left"></i> ล้างรูป
+                            </button>
+                            <label class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg cursor-pointer flex items-center gap-1">
+                                <i class="fa-solid fa-image"></i> อัปโหลดภาพผังแปลง
+                                <input type="file" accept="image/*" @change="uploadMapImage" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="relative bg-white border-2 border-dashed border-stone-300 rounded-xl overflow-hidden shadow-inner flex justify-center items-center" style="min-h-[320px]">
+                        <!-- Compass Indicator -->
+                        <div class="absolute top-3 right-3 bg-white/90 border border-stone-300 px-2 py-1 rounded-lg shadow text-center z-10 pointer-events-none">
+                            <div class="font-bold text-rose-600 text-xs">N</div>
+                            <i class="fa-solid fa-arrow-up text-rose-600 text-sm"></i>
+                            <div class="text-[10px] text-stone-500">ทิศเหนือ</div>
+                        </div>
+
+                        <canvas ref="farmCanvas" width="700" height="350" class="w-full h-auto cursor-crosshair bg-stone-50" @mousedown="startDrawing" @mousemove="draw" @mouseup="stopDrawing" @mouseleave="stopDrawing" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="stopDrawing"></canvas>
+                    </div>
+                    <p class="text-[11px] text-stone-500 mt-2"><i class="fa-solid fa-circle-info"></i> ลากเมาส์หรือนิ้วบนผืนผ้าใบเพื่อวาดโซนแปลง เช่น แปลงผัก, โรงเรือน, บ่อน้ำ, ถังหมักปุ๋ย</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PLOTS MANAGEMENT & CROPS REGISTER -->
+        <div v-show="currentTab === 'plots'" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b pb-4 mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-emerald-700"></i> ทะเบียนแปลงเกษตร & พืชที่ปลูกแต่ละแปลง
+                        </h3>
+                        <p class="text-xs text-stone-500 mt-1">กำหนดรายละเอียดของแต่ละแปลง รายการพืชที่ลงปลูก และการจัดการแปลง (วัสดุคลุมดิน / การทำค้าง / สภาพดิน)</p>
+                    </div>
+                    <button @click="addNewPlot" class="bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow transition">
+                        <i class="fa-solid fa-plus-circle"></i> เพิ่มแปลงเกษตรใหม่
+                    </button>
+                </div>
+
+                <!-- Plot Cards List -->
+                <div class="space-y-6">
+                    <div v-for="(plot, pIndex) in plotList" :key="pIndex" class="bg-stone-50 border border-stone-300 rounded-2xl p-5 shadow-sm hover:shadow transition">
+                        <!-- Plot Card Header -->
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-3 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-emerald-700 text-white text-xs font-bold px-3 py-1 rounded-lg">
+                                    {{ plot.name || ('แปลงที่ ' + (pIndex + 1)) }}
+                                </span>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full border border-emerald-300">
+                                    {{ plot.areaType || 'แปลงดิน' }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <button @click="addCropToPlot(plot)" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg font-medium flex items-center gap-1">
+                                    <i class="fa-solid fa-seedling"></i> เพิ่มพืชในแปลงนี้
+                                </button>
+                                <button @click="removePlot(pIndex)" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded-lg font-medium transition" title="ลบแปลงนี้">
+                                    <i class="fa-solid fa-trash"></i> ลบแปลง
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Plot Overview & Management Form -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs mb-4">
+                            <div>
+                                <label class="block font-bold text-stone-700 mb-1">ชื่อ/รหัสแปลง</label>
+                                <input type="text" v-model="plot.name" placeholder="เช่น แปลงที่ 1 (แคร่ผักสลัด)" class="w-full p-2 border border-stone-300 rounded-lg bg-white">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-700 mb-1">ลักษณะแปลง</label>
+                                <select v-model="plot.areaType" class="w-full p-2 border border-stone-300 rounded-lg bg-white">
+                                    <option value="แปลงดินบนพื้น">แปลงดินบนพื้น</option>
+                                    <option value="แปลงยกแคร่">แปลงยกแคร่</option>
+                                    <option value="กระถาง / ถุงปลูก">กระถาง / ถุงปลูก</option>
+                                    <option value="โรงเรือนกางมุ้ง">โรงเรือนกางมุ้ง</option>
+                                    <option value="ซุ้มเลื้อย / นั่งร้าน">ซุ้มเลื้อย / นั่งร้าน</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-700 mb-1">ขนาดแปลง / จำนวนกระถาง</label>
+                                <input type="text" v-model="plot.size" placeholder="เช่น 1.2 x 5 เมตร หรือ 20 กระถาง" class="w-full p-2 border border-stone-300 rounded-lg bg-white">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-700 mb-1">สถานะสภาพดิน / แปลง</label>
+                                <select v-model="plot.soilStatus" class="w-full p-2 border border-stone-300 rounded-lg bg-white">
+                                    <option value="พร้อมปลูก (สมบูรณ์)">พร้อมปลูก (สมบูรณ์)</option>
+                                    <option value="กำลังปลูกพืช">กำลังปลูกพืช</option>
+                                    <option value="อยู่ระหว่างพักดิน / หมักดิน">อยู่ระหว่างพักดิน / หมักดิน</option>
+                                    <option value="ปรับปรุงดินใหม่">ปรับปรุงดินใหม่</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Plot Management Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs bg-white p-3 rounded-xl border border-stone-200 mb-4">
+                            <div>
+                                <label class="block font-semibold text-stone-700 mb-1"><i class="fa-solid fa-wheat-awn text-amber-600"></i> วัสดุคลุมดิน (Mulching)</label>
+                                <input type="text" v-model="plot.mulchType" placeholder="เช่น ฟางข้าวหนา 2 นิ้ว / หญ้าแห้ง / พลาสติกดำ" class="w-full p-1.5 border rounded">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-stone-700 mb-1"><i class="fa-solid fa-border-all text-blue-600"></i> โครงสร้าง / ค้าง (Trellis/Support)</label>
+                                <input type="text" v-model="plot.trellisType" placeholder="เช่น มีค้างไม้ไผ่ / ตาข่ายเชือก / ไม่มี" class="w-full p-1.5 border rounded">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-stone-700 mb-1"><i class="fa-solid fa-notes-medical text-green-600"></i> บันทึกการดูแลจัดการแปลงพิเศษ</label>
+                                <input type="text" v-model="plot.managementNotes" placeholder="เช่น ฉีดพ่นจุลินทรีย์สังเคราะห์แสงสัปดาห์ละครั้ง" class="w-full p-1.5 border rounded">
+                            </div>
+                        </div>
+
+                        <!-- Crops Table inside this Plot -->
+                        <div class="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                            <div class="bg-stone-100 px-3 py-2 border-b border-stone-200 flex items-center justify-between">
+                                <span class="font-bold text-xs text-stone-800 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-list-check text-green-700"></i> รายการพืชที่ลงปลูกใน {{ plot.name || ('แปลงที่ ' + (pIndex + 1)) }}
+                                </span>
+                                <span class="text-[11px] text-stone-500">รวม {{ plot.crops ? plot.crops.length : 0 }} ชนิด</span>
+                            </div>
+
+                            <div v-if="!plot.crops || plot.crops.length === 0" class="p-4 text-center text-xs text-stone-400">
+                                ยังไม่มีรายการพืชในแปลงนี้ คลิก "เพิ่มพืชในแปลงนี้" เพื่อลงบันทึก
+                            </div>
+
+                            <div v-else class="overflow-x-auto custom-scrollbar">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="bg-stone-50 text-stone-700 border-b">
+                                            <th class="p-2 w-32">ชนิดพืช / พันธุ์</th>
+                                            <th class="p-2 w-28">วันที่ปลูก</th>
+                                            <th class="p-2 w-28">กำหนดเก็บเกี่ยว</th>
+                                            <th class="p-2 w-28">จำนวน / ระยะปลูก</th>
+                                            <th class="p-2 w-28">แหล่งพันธุ์</th>
+                                            <th class="p-2 w-28">สถานะพืช</th>
+                                            <th class="p-2 w-10 text-center">ลบ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-stone-200">
+                                        <tr v-for="(crop, cIndex) in plot.crops" :key="cIndex" class="hover:bg-lime-50/40">
+                                            <td class="p-2"><input type="text" v-model="crop.name" placeholder="เช่น ผักคะน้าฮ่องกง" class="w-full p-1 border rounded"></td>
+                                            <td class="p-2"><input type="date" v-model="crop.plantDate" class="w-full p-1 border rounded"></td>
+                                            <td class="p-2"><input type="date" v-model="crop.harvestDate" class="w-full p-1 border rounded"></td>
+                                            <td class="p-2"><input type="text" v-model="crop.spacing" placeholder="200 ต้น (20x20ซม.)" class="w-full p-1 border rounded"></td>
+                                            <td class="p-2">
+                                                <select v-model="crop.seedSource" class="w-full p-1 border rounded">
+                                                    <option value="เก็บเมล็ดเอง">เก็บเมล็ดเอง</option>
+                                                    <option value="ซื้อจากร้าน">ซื้อจากร้าน</option>
+                                                    <option value="แจก/เครือข่าย">แจก/เครือข่าย</option>
+                                                </select>
+                                            </td>
+                                            <td class="p-2">
+                                                <select v-model="crop.status" class="w-full p-1 border rounded font-medium" :class="{
+                                                    'text-emerald-700 bg-emerald-50': crop.status === 'กำลังเติบโต',
+                                                    'text-blue-700 bg-blue-50': crop.status === 'เก็บเกี่ยวแล้ว',
+                                                    'text-stone-600 bg-stone-100': crop.status === 'พักแปลง'
+                                                }">
+                                                    <option value="กำลังเติบโต">🌱 กำลังเติบโต</option>
+                                                    <option value="เก็บเกี่ยวแล้ว">🧺 เก็บเกี่ยวแล้ว</option>
+                                                    <option value="พักแปลง">💤 พักแปลง</option>
+                                                </select>
+                                            </td>
+                                            <td class="p-2 text-center">
+                                                <button @click="plot.crops.splice(cIndex, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-xmark"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: FARM ACTIVITY LOGS WITH PHOTOS -->
+        <div v-show="currentTab === 'activity'" class="space-y-6">
+            
+            <!-- SECTION 4: Soil Preparation & Soil Improvement -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-shovels text-amber-700"></i> 4. บันทึกการเตรียมดินและการปรับปรุงบำรุงดิน
+                        </h3>
+                        <p class="text-xs text-stone-500">เน้นการพึ่งพาตนเองและใช้วัสดุในท้องถิ่นเพื่อลดต้นทุน</p>
+                    </div>
+                    <button @click="addSoilLog" class="bg-green-700 hover:bg-green-800 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> เพิ่มรายการเตรียมดิน
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-2.5 w-28">วันที่</th>
+                                <th class="p-2.5 w-32">แปลง</th>
+                                <th class="p-2.5">กิจกรรม (ไถ/พรวน/หว่านปุ๋ยพืชสด)</th>
+                                <th class="p-2.5">วัสดุ/ปุ๋ยที่ใช้</th>
+                                <th class="p-2.5 w-24">ปริมาณ</th>
+                                <th class="p-2.5 w-28">แหล่งที่มา</th>
+                                <th class="p-2.5 w-28">ต้นทุน (บาท)</th>
+                                <th class="p-2.5 w-32">รูปถ่ายกิจกรรม</th>
+                                <th class="p-2.5 w-10 text-center no-print">ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr v-for="(item, idx) in soilLogs" :key="idx" class="hover:bg-lime-50/50">
+                                <td class="p-2"><input type="date" v-model="item.date" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.plot" class="w-full p-1.5 border rounded">
+                                        <option v-for="p in plotList" :key="p.name" :value="p.name">{{ p.name }}</option>
+                                        <option value="แปลงรวม/ทั้งหมด">แปลงรวม/ทั้งหมด</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.activity" placeholder="หมักดินด้วยน้ำหมักชีวภาพ" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.materials" placeholder="ปุ๋ยคอก + เศษใบไม้" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.amount" placeholder="20 กก." class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.source" class="w-full p-1.5 border rounded">
+                                        <option value="ทำเอง">ทำเอง</option>
+                                        <option value="ซื้อ">ซื้อ</option>
+                                        <option value="แบ่งปัน/แจกฟรี">แบ่งปัน/แจกฟรี</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="number" v-model.number="item.cost" placeholder="0" class="w-full p-1.5 border rounded text-right"></td>
+                                <td class="p-2">
+                                    <div class="flex items-center gap-1">
+                                        <div v-if="item.photo" class="relative group w-10 h-10 border rounded-lg overflow-hidden shrink-0">
+                                            <img :src="item.photo" class="w-full h-full object-cover cursor-pointer" @click="activeImageModal = item.photo">
+                                            <button @click="item.photo = null" class="absolute top-0 right-0 bg-rose-600 text-white w-4 h-4 rounded-bl text-[9px] flex items-center justify-center no-print">×</button>
+                                        </div>
+                                        <label class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2 py-1 rounded border text-[11px] cursor-pointer flex items-center gap-1 no-print">
+                                            <i class="fa-solid fa-camera text-green-600"></i>
+                                            <span v-if="!item.photo">แนบรูป</span>
+                                            <input type="file" accept="image/*" class="hidden" @change="attachPhoto($event, item)">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="p-2 text-center no-print">
+                                    <button @click="soilLogs.splice(idx, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 5: Irrigation & Water Logs -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex items-center justify-between border-b pb-3 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-droplet text-blue-600"></i> 5. บันทึกการให้น้ำและการจัดการความชื้น
+                        </h3>
+                        <p class="text-xs text-stone-500">บันทึกระบบให้น้ำ วิธีการ และช่วงเวลา</p>
+                    </div>
+                    <button @click="addWaterLog" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> เพิ่มบันทึกให้น้ำ
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-2.5 w-28">วันที่</th>
+                                <th class="p-2.5 w-32">แปลง</th>
+                                <th class="p-2.5">วิธีให้น้ำ (ฝน/รดมือ/ระบบน้ำหยด)</th>
+                                <th class="p-2.5">ปริมาณ / ระยะเวลา</th>
+                                <th class="p-2.5">หมายเหตุ (เช่น น้ำจากบ่อ/น้ำฝน)</th>
+                                <th class="p-2.5 w-10 text-center no-print">ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr v-for="(item, idx) in waterLogs" :key="idx">
+                                <td class="p-2"><input type="date" v-model="item.date" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.plot" class="w-full p-1.5 border rounded">
+                                        <option v-for="p in plotList" :key="p.name" :value="p.name">{{ p.name }}</option>
+                                        <option value="ทุกแปลง">ทุกแปลง</option>
+                                    </select>
+                                </td>
+                                <td class="p-2">
+                                    <select v-model="item.method" class="w-full p-1.5 border rounded">
+                                        <option value="รดด้วยสายยาง/ฝักบัว">รดด้วยสายยาง/ฝักบัว</option>
+                                        <option value="ระบบสเปรย์/มินิสปริงเกลอร์">ระบบสเปรย์/มินิสปริงเกลอร์</option>
+                                        <option value="ระบบน้ำหยด">ระบบน้ำหยด</option>
+                                        <option value="น้ำฝนธรรมชาติ">น้ำฝนธรรมชาติ</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.duration" placeholder="เช่น 15 นาที วันละ 2 ครั้ง" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.notes" placeholder="ใช้น้ำหมักชีวภาพผสมรด" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2 text-center no-print">
+                                    <button @click="waterLogs.splice(idx, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 6: Fertilizer & Soil Conditioner Log -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-flask text-emerald-700"></i> 6. บันทึกการใช้ปุ๋ยและสารปรับปรุงดิน
+                        </h3>
+                        <p class="text-xs text-stone-500">ปุ๋ยคอก / ปุ๋ยหมัก / น้ำหมักชีวภาพ / จุลินทรีย์สังเคราะห์แสง</p>
+                    </div>
+                    <button @click="addFertilizerLog" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> เพิ่มบันทึกใส่ปุ๋ย
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-2.5 w-28">วันที่</th>
+                                <th class="p-2.5 w-32">แปลง</th>
+                                <th class="p-2.5">ประเภทปุ๋ย / ชีวภัณฑ์</th>
+                                <th class="p-2.5 w-24">ปริมาณ</th>
+                                <th class="p-2.5">อัตราส่วนผสม (ถ้าทำเอง)</th>
+                                <th class="p-2.5 w-28">แหล่งที่มา</th>
+                                <th class="p-2.5 w-32">รูปถ่ายชีวภัณฑ์</th>
+                                <th class="p-2.5 w-10 text-center no-print">ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr v-for="(item, idx) in fertilizerLogs" :key="idx" class="hover:bg-lime-50/50">
+                                <td class="p-2"><input type="date" v-model="item.date" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.plot" class="w-full p-1.5 border rounded">
+                                        <option v-for="p in plotList" :key="p.name" :value="p.name">{{ p.name }}</option>
+                                        <option value="ทุกแปลง">ทุกแปลง</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.type" placeholder="ปุ๋ยหมักสูตร พด.1 / จุลินทรีย์สังเคราะห์แสง" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.amount" placeholder="5 กิโลกรัม" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.ratio" placeholder="20 ซีซี ต่อน้ำ 20 ลิตร" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.source" class="w-full p-1.5 border rounded">
+                                        <option value="หมักทำเอง">หมักทำเอง</option>
+                                        <option value="ซื้อ">ซื้อ</option>
+                                        <option value="ได้รับสนับสนุน">ได้รับสนับสนุน</option>
+                                    </select>
+                                </td>
+                                <td class="p-2">
+                                    <div class="flex items-center gap-1">
+                                        <div v-if="item.photo" class="relative group w-10 h-10 border rounded-lg overflow-hidden shrink-0">
+                                            <img :src="item.photo" class="w-full h-full object-cover cursor-pointer" @click="activeImageModal = item.photo">
+                                            <button @click="item.photo = null" class="absolute top-0 right-0 bg-rose-600 text-white w-4 h-4 rounded-bl text-[9px] flex items-center justify-center no-print">×</button>
+                                        </div>
+                                        <label class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2 py-1 rounded border text-[11px] cursor-pointer flex items-center gap-1 no-print">
+                                            <i class="fa-solid fa-camera text-green-600"></i>
+                                            <span v-if="!item.photo">แนบรูป</span>
+                                            <input type="file" accept="image/*" class="hidden" @change="attachPhoto($event, item)">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="p-2 text-center no-print">
+                                    <button @click="fertilizerLogs.splice(idx, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 7: Integrated Pest Management (IPM) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-bug text-rose-600"></i> 7. บันทึกการจัดการศัตรูพืชแบบผสมผสาน (IPM)
+                        </h3>
+                        <p class="text-xs text-stone-500">เน้นการสังเกตและใช้วิธีธรรมชาติ/สารสกัดสมุนไพร เพื่อรักษาสมดุลระบบนิเวศ</p>
+                    </div>
+                    <button @click="addIpmLog" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> เพิ่มบันทึก IPM
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-2.5 w-28">วันที่</th>
+                                <th class="p-2.5 w-32">แปลง</th>
+                                <th class="p-2.5">ศัตรูพืช / โรคที่พบ</th>
+                                <th class="p-2.5 w-24">ระดับระบาด</th>
+                                <th class="p-2.5">วิธีจัดการ (กลไก/ชีวภาพ/สมุนไพร)</th>
+                                <th class="p-2.5">วัสดุที่ใช้</th>
+                                <th class="p-2.5 w-24">ประสิทธิผล</th>
+                                <th class="p-2.5 w-32">รูปภาพศัตรูพืช</th>
+                                <th class="p-2.5 w-10 text-center no-print">ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr v-for="(item, idx) in ipmLogs" :key="idx" class="hover:bg-lime-50/50">
+                                <td class="p-2"><input type="date" v-model="item.date" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.plot" class="w-full p-1.5 border rounded">
+                                        <option v-for="p in plotList" :key="p.name" :value="p.name">{{ p.name }}</option>
+                                        <option value="ทุกแปลง">ทุกแปลง</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.pestFound" placeholder="หนอนใยผัก / เพลี้ยอ่อน" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.severity" class="w-full p-1.5 border rounded">
+                                        <option value="น้อย">น้อย</option>
+                                        <option value="ปานกลาง">ปานกลาง</option>
+                                        <option value="มาก">มาก</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.method" placeholder="จับออก / ฉีดน้ำหมักสะเดา" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.materials" placeholder="น้ำหมักสะเดา + ยาซูเบตา" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.effectiveness" class="w-full p-1.5 border rounded">
+                                        <option value="ดีมาก">ดีมาก</option>
+                                        <option value="พอใช้">พอใช้</option>
+                                        <option value="ไม่ได้ผล">ไม่ได้ผล</option>
+                                    </select>
+                                </td>
+                                <td class="p-2">
+                                    <div class="flex items-center gap-1">
+                                        <div v-if="item.photo" class="relative group w-10 h-10 border rounded-lg overflow-hidden shrink-0">
+                                            <img :src="item.photo" class="w-full h-full object-cover cursor-pointer" @click="activeImageModal = item.photo">
+                                            <button @click="item.photo = null" class="absolute top-0 right-0 bg-rose-600 text-white w-4 h-4 rounded-bl text-[9px] flex items-center justify-center no-print">×</button>
+                                        </div>
+                                        <label class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2 py-1 rounded border text-[11px] cursor-pointer flex items-center gap-1 no-print">
+                                            <i class="fa-solid fa-camera text-green-600"></i>
+                                            <span v-if="!item.photo">แนบรูป</span>
+                                            <input type="file" accept="image/*" class="hidden" @change="attachPhoto($event, item)">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="p-2 text-center no-print">
+                                    <button @click="ipmLogs.splice(idx, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: HARVEST & UTILIZATION (CONSUME / SHARE / SELL) -->
+        <div v-show="currentTab === 'harvest'" class="space-y-6">
+            
+            <!-- SECTION 8: Harvest Yield Logs -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-basket-shopping text-emerald-600"></i> 8. บันทึกการเก็บเกี่ยวและผลผลิต
+                        </h3>
+                        <p class="text-xs text-stone-500">บันทึกปริมาณผลผลิต คุณภาพ และการจัดการหลังเก็บเกี่ยว</p>
+                    </div>
+                    <button @click="addHarvestLog" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> เพิ่มรายการเก็บเกี่ยว
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-2.5 w-28">วันที่เก็บเกี่ยว</th>
+                                <th class="p-2.5 w-32">แปลง</th>
+                                <th class="p-2.5">ชนิดผลผลิต</th>
+                                <th class="p-2.5 w-24">ผลผลิต (กก.)</th>
+                                <th class="p-2.5 w-28">คุณภาพ / เกรด</th>
+                                <th class="p-2.5">การจัดการหลังเก็บเกี่ยว</th>
+                                <th class="p-2.5">หมายเหตุ</th>
+                                <th class="p-2.5 w-28">รูปภาพผลผลิต</th>
+                                <th class="p-2.5 w-10 text-center no-print">ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr v-for="(item, idx) in harvestLogs" :key="idx" class="hover:bg-lime-50/50">
+                                <td class="p-2"><input type="date" v-model="item.date" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <select v-model="item.plot" class="w-full p-1.5 border rounded">
+                                        <option v-for="p in plotList" :key="p.name" :value="p.name">{{ p.name }}</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.crop" placeholder="ผักคะน้า organic" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="number" step="0.1" v-model.number="item.weightKg" placeholder="0.0" class="w-full p-1.5 border rounded text-right"></td>
+                                <td class="p-2">
+                                    <select v-model="item.grade" class="w-full p-1.5 border rounded">
+                                        <option value="เกรด A (สวยงาม)">เกรด A (สวยงาม)</option>
+                                        <option value="เกรด B (ปานกลาง)">เกรด B (ปานกลาง)</option>
+                                        <option value="เกรด C (มีตำหนิเล็กน้อย)">เกรด C (มีตำหนิ)</option>
+                                    </select>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.postHarvest" placeholder="ล้างสะอาด / ตัดแต่ง / บรรจุถุง" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.notes" placeholder="อากาศแจ่มใส ผักสดกรอบ" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2">
+                                    <div class="flex items-center gap-1">
+                                        <div v-if="item.photo" class="relative group w-10 h-10 border rounded-lg overflow-hidden shrink-0">
+                                            <img :src="item.photo" class="w-full h-full object-cover cursor-pointer" @click="activeImageModal = item.photo">
+                                            <button @click="item.photo = null" class="absolute top-0 right-0 bg-rose-600 text-white w-4 h-4 rounded-bl text-[9px] flex items-center justify-center no-print">×</button>
+                                        </div>
+                                        <label class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-2 py-1 rounded border text-[11px] cursor-pointer flex items-center gap-1 no-print">
+                                            <i class="fa-solid fa-camera text-green-600"></i>
+                                            <span v-if="!item.photo">แนบรูป</span>
+                                            <input type="file" accept="image/*" class="hidden" @change="attachPhoto($event, item)">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="p-2 text-center no-print">
+                                    <button @click="harvestLogs.splice(idx, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 10: Consumption / Share / Sales Record -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                            <i class="fa-solid fa-hand-holding-heart text-amber-600"></i> 10. บันทึกการใช้บริโภค / แบ่งปัน / ตลาดและการจำหน่าย
+                        </h3>
+                        <p class="text-xs text-stone-500">เชื่อมโยงการผลิตกับการพึ่งตนเอง สร้างสุขภาวะ และรายได้</p>
+                    </div>
+                    <button @click="addUtilizationLog" class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> เพิ่มบันทึกการใช้ประโยชน์
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-2.5 w-28">วันที่</th>
+                                <th class="p-2.5">ผลผลิต</th>
+                                <th class="p-2.5 w-20">รวม (กก.)</th>
+                                <th class="p-2.5 w-24">กินในบ้าน (กก.)</th>
+                                <th class="p-2.5 w-24">แจก/แบ่งปัน (กก.)</th>
+                                <th class="p-2.5 w-24">ขาย (กก.)</th>
+                                <th class="p-2.5 w-24">ราคา/หน่วย</th>
+                                <th class="p-2.5 w-28">รายได้รวม (บาท)</th>
+                                <th class="p-2.5">ช่องทางจำหน่าย / ผู้รับแบ่งปัน</th>
+                                <th class="p-2.5 w-10 text-center no-print">ลบ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-stone-200">
+                            <tr v-for="(item, idx) in utilizationLogs" :key="idx" class="hover:bg-lime-50/50">
+                                <td class="p-2"><input type="date" v-model="item.date" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="text" v-model="item.crop" placeholder="ผักคะน้า" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2"><input type="number" step="0.1" v-model.number="item.totalKg" class="w-full p-1.5 border rounded text-right bg-stone-50 font-bold"></td>
+                                <td class="p-2"><input type="number" step="0.1" v-model.number="item.consumeKg" placeholder="0" class="w-full p-1.5 border rounded text-right"></td>
+                                <td class="p-2"><input type="number" step="0.1" v-model.number="item.shareKg" placeholder="0" class="w-full p-1.5 border rounded text-right"></td>
+                                <td class="p-2"><input type="number" step="0.1" v-model.number="item.sellKg" placeholder="0" class="w-full p-1.5 border rounded text-right"></td>
+                                <td class="p-2"><input type="number" v-model.number="item.pricePerUnit" placeholder="0" class="w-full p-1.5 border rounded text-right"></td>
+                                <td class="p-2">
+                                    <div class="p-1.5 bg-amber-50 text-amber-900 border rounded font-bold text-right">
+                                        {{ ((item.sellKg || 0) * (item.pricePerUnit || 0)).toLocaleString() }}
+                                    </div>
+                                </td>
+                                <td class="p-2"><input type="text" v-model="item.channel" placeholder="ตลาดเขียว / เพื่อนบ้าน / ญาติมิตร" class="w-full p-1.5 border rounded"></td>
+                                <td class="p-2 text-center no-print">
+                                    <button @click="utilizationLogs.splice(idx, 1)" class="text-rose-500 hover:text-rose-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: REFLECTIONS & MULTIDIMENSIONAL LEARNING -->
+        <div v-show="currentTab === 'reflections'" class="space-y-6">
+            
+            <!-- SECTION 9: Cost-Return Analysis & Financial Summary -->
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <h3 class="text-lg font-bold text-stone-800 border-b pb-3 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-indigo-700"></i> 9. การวิเคราะห์ต้นทุน-ผลตอบแทน และการพึ่งตนเอง
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-stone-800">
+                        <span class="text-xs font-bold text-rose-700 uppercase">ต้นทุนรวมทั้งหมด</span>
+                        <div class="text-2xl font-bold text-rose-800 mt-1">{{ totalExpenses.toLocaleString() }} <span class="text-xs font-normal">บาท</span></div>
+                        <p class="text-[11px] text-rose-600 mt-1">(ปัจจัยการผลิต + ปุ๋ย + วัสดุอุปกรณ์)</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-stone-800">
+                        <span class="text-xs font-bold text-emerald-700 uppercase">รายได้รวมจากการจำหน่าย</span>
+                        <div class="text-2xl font-bold text-emerald-800 mt-1">{{ totalIncome.toLocaleString() }} <span class="text-xs font-normal">บาท</span></div>
+                        <p class="text-[11px] text-emerald-600 mt-1">(รายได้รวมจากการจำหน่ายผลผลิต)</p>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border" :class="netProfit >= 0 ? 'bg-green-50 border-green-300 text-green-900' : 'bg-amber-50 border-amber-300 text-amber-900'">
+                        <span class="text-xs font-bold uppercase">ผลตอบแทนสุทธิ (กำไร/ขาดทุน)</span>
+                        <div class="text-2xl font-bold mt-1">
+                            {{ netProfit >= 0 ? '+' : '' }}{{ netProfit.toLocaleString() }} <span class="text-xs font-normal">บาท</span>
+                        </div>
+                        <p class="text-[11px] mt-1" :class="netProfit >= 0 ? 'text-green-700' : 'text-amber-700'">
+                            {{ netProfit >= 0 ? 'มีกำไรสุทธิ' : 'ขาดทุนเชิงเงินสด (ดูคุณค่าประหยัดค่าอาหารเพิ่มเติม)' }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200 mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-stone-800 text-sm">มูลค่าการประหยัดค่าอาหารในครัวเรือน (พึ่งตนเอง)</h4>
+                            <p class="text-xs text-stone-500">คำนวณจากผลผลิตที่ปลูกกินเอง × ราคาตลาดเฉลี่ย</p>
+                        </div>
+                        <div class="text-xl font-bold text-green-700">
+                            {{ estimatedSelfRelianceSavings.toLocaleString() }} บาท
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multidimensional Reflections -->
+                <h4 class="font-bold text-stone-800 mb-3 border-b pb-2 flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-shapes text-teal-600"></i> บันทึกถอดบทเรียนรายมิติ 6 เดือน (Multidimensional Reflection)
+                </h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-4 rounded-2xl border border-stone-200 bg-white shadow-sm space-y-2">
+                        <label class="font-bold text-green-800 flex items-center gap-2">
+                            <i class="fa-solid fa-heart-pulse text-rose-500"></i> 1. มิติด้านสุขภาพ & สุขภาวะ (Health & Physical)
+                        </label>
+                        <textarea v-model="reflection.healthDimension" rows="3" placeholder="ร่างกายแข็งแรงขึ้น ไม่สัมผัสสารเคมี อาหารปลอดภัย สุขภาพจิตแจ่มใส..." class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-stone-200 bg-white shadow-sm space-y-2">
+                        <label class="font-bold text-green-800 flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-amber-500"></i> 2. มิติด้านเศรษฐกิจ & การลดรายจ่าย (Economic)
+                        </label>
+                        <textarea v-model="reflection.economicDimension" rows="3" placeholder="ประหยัดค่าซื้อผักเข้าบ้านวันละ 50-100 บาท มีรายได้เสริมจากการขาย..." class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-stone-200 bg-white shadow-sm space-y-2">
+                        <label class="font-bold text-green-800 flex items-center gap-2">
+                            <i class="fa-solid fa-people-hold text-indigo-500"></i> 3. มิติด้านสังคม & การแบ่งปัน (Social & Community)
+                        </label>
+                        <textarea v-model="reflection.socialDimension" rows="3" placeholder="ได้แจกผักให้เพื่อนบ้าน สร้างสัมพันธภาพ เกิดการแลกเปลี่ยนเมล็ดพันธุ์..." class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+
+                    <div class="p-4 rounded-2xl border border-stone-200 bg-white shadow-sm space-y-2">
+                        <label class="font-bold text-green-800 flex items-center gap-2">
+                            <i class="fa-solid fa-tree text-emerald-600"></i> 4. มิติด้านนิเวศ & สิ่งแวดล้อม (Ecology & Environment)
+                        </label>
+                        <textarea v-model="reflection.environmentDimension" rows="3" placeholder="ดินร่วนซุย มีไส้เดือนเพิ่มขึ้น แมลงศัตรูพืชลดลงด้วยระบบนิเวศสมดุล..." class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-4 space-y-3 text-xs">
+                    <div>
+                        <label class="block font-bold text-stone-800 mb-1">บทเรียนสำคัญที่ได้รับในเทอมนี้ (ข้อดี / อุปสรรค / วิธีแก้ไข)</label>
+                        <textarea v-model="reflection.lessonsLearned" rows="3" placeholder="บทเรียนที่สำคัญจากการลงมือทำแปลงเกษตรในระยะเวลา 6 เดือน..." class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-stone-800 mb-1">แผนการปรับปรุงการปลูกและการพัฒนาตนเองในอนาคต</label>
+                        <textarea v-model="reflection.futurePlan" rows="3" placeholder="แผนการขยายแปลง ทำระบบน้ำอัตโนมัติ หมักปุ๋ยสูตรใหม่..." class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-green-500"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: ANALYTICS & CHARTS -->
+        <div v-show="currentTab === 'analytics'" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-6">
+                <h3 class="text-lg font-bold text-stone-800 border-b pb-3 mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line text-teal-600"></i> สรุปผลภาพรวม & สถิติฟาร์ม
+                </h3>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-sm">
+                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
+                        <i class="fa-solid fa-weight-hanging text-emerald-600 text-2xl mb-1"></i>
+                        <div class="text-xs text-stone-600 font-medium">ผลผลิตรวมทั้งหมด</div>
+                        <div class="text-xl font-bold text-emerald-900 mt-1">{{ totalHarvestWeight.toFixed(1) }} <span class="text-xs font-normal">กก.</span></div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-center">
+                        <i class="fa-solid fa-utensils text-amber-600 text-2xl mb-1"></i>
+                        <div class="text-xs text-stone-600 font-medium">บริโภคในบ้าน</div>
+                        <div class="text-xl font-bold text-amber-900 mt-1">{{ totalConsumedWeight.toFixed(1) }} <span class="text-xs font-normal">กก.</span></div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-center">
+                        <i class="fa-solid fa-heart text-rose-600 text-2xl mb-1"></i>
+                        <div class="text-xs text-stone-600 font-medium">แบ่งปันเพื่อนบ้าน</div>
+                        <div class="text-xl font-bold text-rose-900 mt-1">{{ totalSharedWeight.toFixed(1) }} <span class="text-xs font-normal">กก.</span></div>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-center">
+                        <i class="fa-solid fa-sack-dollar text-blue-600 text-2xl mb-1"></i>
+                        <div class="text-xs text-stone-600 font-medium">รายได้จากการจำหน่าย</div>
+                        <div class="text-xl font-bold text-blue-900 mt-1">{{ totalIncome.toLocaleString() }} <span class="text-xs font-normal">บาท</span></div>
+                    </div>
+                </div>
+
+                <!-- Charts Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+                        <h4 class="font-bold text-stone-800 text-xs text-center mb-3">สัดส่วนการนำผลผลิตไปใช้ประโยชน์ (กก.)</h4>
+                        <div class="h-64 flex justify-center items-center">
+                            <canvas id="utilizationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-stone-50 rounded-2xl border border-stone-200">
+                        <h4 class="font-bold text-stone-800 text-xs text-center mb-3">เปรียบเทียบ รายได้ vs ต้นทุน (บาท)</h4>
+                        <div class="h-64 flex justify-center items-center">
+                            <canvas id="financeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7: FULL FORM PRINT & EXPORT PREVIEW -->
+        <div v-show="currentTab === 'preview'" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-md border border-stone-300 p-6 sm:p-10 max-w-5xl mx-auto" id="printable-doc">
+                
+                <!-- Document Header Cover -->
+                <div class="text-center border-b-2 border-green-800 pb-6 mb-6">
+                    <div class="text-xs text-stone-500 mb-1">หลักสูตรการเรียนรู้กสิกรรมไร้สารพิษและอาหาร เพื่อเศรษฐกิจและสุขภาวะพึ่งตนตามวิถีเศรษฐกิจพอเพียง</div>
+                    <h1 class="text-2xl font-bold text-green-900">แบบบันทึกบัญชีฟาร์ม (Farm Account Record)</h1>
+                    <p class="text-sm text-stone-700 mt-1">บันทึกข้อมูลการทำเกษตรเพื่อการเรียนรู้ พัฒนา และพึ่งตนอย่างยั่งยืน</p>
+                </div>
+
+                <!-- Trainee & Farm Details -->
+                <div class="grid grid-cols-2 gap-4 text-xs mb-6 bg-stone-50 p-4 rounded-xl border border-stone-200">
+                    <div><strong>ชื่อ-สกุล:</strong> {{ profile.name || '-' }}</div>
+                    <div><strong>วันที่เริ่มบันทึก:</strong> {{ profile.startDate || '-' }}</div>
+                    <div><strong>ปีการปลูก (พ.ศ.):</strong> {{ profile.cropYear || '-' }}</div>
+                    <div><strong>เบอร์โทรศัพท์ / Line:</strong> {{ profile.phone || '-' }} / {{ profile.lineId || '-' }}</div>
+                    <div class="col-span-2"><strong>ที่อยู่แปลง:</strong> {{ profile.address || '-' }}</div>
+                    <div class="col-span-2">
+                        <strong>เป้าหมายแปลง:</strong> 
+                        <span v-if="profile.goals.safe"> [✓ ปลอดภัย]</span>
+                        <span v-if="profile.goals.household"> [✓ บริโภคในบ้าน]</span>
+                        <span v-if="profile.goals.share"> [✓ แบ่งปัน]</span>
+                        <span v-if="profile.goals.reduceCost"> [✓ ลดต้นทุน]</span>
+                        <span v-if="profile.goals.sell"> [✓ จำหน่าย]</span>
+                    </div>
+                </div>
+
+                <!-- Farm Layout Image Preview -->
+                <div v-if="canvasDataUrl" class="mb-8 text-center page-break-avoid">
+                    <h3 class="font-bold text-sm text-stone-800 mb-2 border-b pb-1 text-left">3. แผนผังพื้นที่ปลูก (Farm Layout Plan)</h3>
+                    <img :src="canvasDataUrl" class="max-h-64 mx-auto border rounded-xl shadow-sm">
+                </div>
+
+                <!-- Plots & Crops Summary Preview -->
+                <div class="mb-8 page-break-avoid">
+                    <h3 class="font-bold text-sm text-stone-800 mb-2 border-b pb-1">ทะเบียนแปลงเกษตรและการจัดการแปลง</h3>
+                    <div class="space-y-3">
+                        <div v-for="(p, i) in plotList" :key="i" class="border border-stone-300 rounded-lg p-3 text-xs bg-stone-50/50">
+                            <div class="font-bold text-green-900 border-b pb-1 mb-2 flex justify-between">
+                                <span>{{ p.name }} ({{ p.areaType }} - {{ p.size }})</span>
+                                <span class="text-stone-600 font-normal">สถานะ: {{ p.soilStatus }}</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 text-[11px] mb-2 text-stone-700">
+                                <div><strong>วัสดุคลุมดิน:</strong> {{ p.mulchType || '-' }}</div>
+                                <div><strong>นั่งร้าน/ค้าง:</strong> {{ p.trellisType || '-' }}</div>
+                                <div><strong>การจัดการแปลง:</strong> {{ p.managementNotes || '-' }}</div>
+                            </div>
+                            <table class="w-full text-left border border-stone-300 border-collapse bg-white">
+                                <thead class="bg-stone-100">
+                                    <tr>
+                                        <th class="border border-stone-300 p-1">ชนิดพืช</th>
+                                        <th class="border border-stone-300 p-1">วันปลูก</th>
+                                        <th class="border border-stone-300 p-1">กำหนดเก็บเกี่ยว</th>
+                                        <th class="border border-stone-300 p-1">จำนวน/ระยะ</th>
+                                        <th class="border border-stone-300 p-1">สถานะ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(c, ci) in p.crops" :key="ci">
+                                        <td class="border border-stone-300 p-1 font-semibold">{{ c.name || '-' }}</td>
+                                        <td class="border border-stone-300 p-1">{{ c.plantDate || '-' }}</td>
+                                        <td class="border border-stone-300 p-1">{{ c.harvestDate || '-' }}</td>
+                                        <td class="border border-stone-300 p-1">{{ c.spacing || '-' }}</td>
+                                        <td class="border border-stone-300 p-1">{{ c.status || '-' }}</td>
+                                    </tr>
+                                    <tr v-if="!p.crops || p.crops.length === 0">
+                                        <td colspan="5" class="border border-stone-300 p-1 text-center text-stone-400">ไม่มีรายการพืชในแปลงนี้</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Soil Prep Table Preview -->
+                <div class="mb-8 page-break-avoid">
+                    <h3 class="font-bold text-sm text-stone-800 mb-2 border-b pb-1">4. บันทึกการเตรียมดินและการปรับปรุงบำรุงดิน</h3>
+                    <table class="w-full text-left text-xs border border-stone-300 border-collapse">
+                        <thead class="bg-stone-100">
+                            <tr>
+                                <th class="border border-stone-300 p-2">วันที่</th>
+                                <th class="border border-stone-300 p-2">แปลง</th>
+                                <th class="border border-stone-300 p-2">กิจกรรม</th>
+                                <th class="border border-stone-300 p-2">วัสดุ/ปุ๋ย</th>
+                                <th class="border border-stone-300 p-2">ปริมาณ</th>
+                                <th class="border border-stone-300 p-2">แหล่งที่มา</th>
+                                <th class="border border-stone-300 p-2 text-right">ต้นทุน (บาท)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, i) in soilLogs" :key="i">
+                                <td class="border border-stone-300 p-2">{{ item.date || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.plot || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.activity || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.materials || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.amount || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.source || '-' }}</td>
+                                <td class="border border-stone-300 p-2 text-right">{{ (item.cost || 0).toLocaleString() }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- IPM & Pest Control Table Preview -->
+                <div class="mb-8 page-break-avoid">
+                    <h3 class="font-bold text-sm text-stone-800 mb-2 border-b pb-1">7. บันทึกการจัดการศัตรูพืชแบบผสมผสาน (IPM)</h3>
+                    <table class="w-full text-left text-xs border border-stone-300 border-collapse">
+                        <thead class="bg-stone-100">
+                            <tr>
+                                <th class="border border-stone-300 p-2">วันที่</th>
+                                <th class="border border-stone-300 p-2">แปลง</th>
+                                <th class="border border-stone-300 p-2">ศัตรูพืช/โรค</th>
+                                <th class="border border-stone-300 p-2">ความระบาด</th>
+                                <th class="border border-stone-300 p-2">วิธีจัดการ</th>
+                                <th class="border border-stone-300 p-2">ประสิทธิผล</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, i) in ipmLogs" :key="i">
+                                <td class="border border-stone-300 p-2">{{ item.date || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.plot || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.pestFound || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.severity || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.method || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.effectiveness || '-' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Utilization Preview -->
+                <div class="mb-8 page-break-avoid">
+                    <h3 class="font-bold text-sm text-stone-800 mb-2 border-b pb-1">10. บันทึกการใช้ประโยชน์ผลผลิต / รายได้จากการจำหน่าย</h3>
+                    <table class="w-full text-left text-xs border border-stone-300 border-collapse">
+                        <thead class="bg-stone-100">
+                            <tr>
+                                <th class="border border-stone-300 p-2">วันที่</th>
+                                <th class="border border-stone-300 p-2">ผลผลิต</th>
+                                <th class="border border-stone-300 p-2 text-right">รวม (กก.)</th>
+                                <th class="border border-stone-300 p-2 text-right">กินเอง</th>
+                                <th class="border border-stone-300 p-2 text-right">แจก</th>
+                                <th class="border border-stone-300 p-2 text-right">ขาย</th>
+                                <th class="border border-stone-300 p-2 text-right">รายได้ (บาท)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, i) in utilizationLogs" :key="i">
+                                <td class="border border-stone-300 p-2">{{ item.date || '-' }}</td>
+                                <td class="border border-stone-300 p-2">{{ item.crop || '-' }}</td>
+                                <td class="border border-stone-300 p-2 text-right">{{ item.totalKg || 0 }}</td>
+                                <td class="border border-stone-300 p-2 text-right">{{ item.consumeKg || 0 }}</td>
+                                <td class="border border-stone-300 p-2 text-right">{{ item.shareKg || 0 }}</td>
+                                <td class="border border-stone-300 p-2 text-right">{{ item.sellKg || 0 }}</td>
+                                <td class="border border-stone-300 p-2 text-right">{{ ((item.sellKg || 0) * (item.pricePerUnit || 0)).toLocaleString() }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Reflection Summary Preview -->
+                <div class="page-break-avoid border-t pt-4 text-xs space-y-2">
+                    <h3 class="font-bold text-sm text-stone-800 mb-2">9. บทเรียนและการถอดบทเรียน 6 เดือน</h3>
+                    <p><strong>มิติด้านสุขภาพ:</strong> {{ reflection.healthDimension || '-' }}</p>
+                    <p><strong>มิติด้านเศรษฐกิจ:</strong> {{ reflection.economicDimension || '-' }}</p>
+                    <p><strong>มิติด้านสังคม:</strong> {{ reflection.socialDimension || '-' }}</p>
+                    <p><strong>มิติด้านสิ่งแวดล้อม:</strong> {{ reflection.environmentDimension || '-' }}</p>
+                    <p><strong>บทเรียนสำคัญ:</strong> {{ reflection.lessonsLearned || '-' }}</p>
+                    <p><strong>แผนการอนาคต:</strong> {{ reflection.futurePlan || '-' }}</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
+
+createApp({
+    setup() {
+        const currentTab = ref('profile');
+        const fileInput = ref(null);
+        const farmCanvas = ref(null);
+        const activeImageModal = ref(null);
+
+        const toast = ref({ show: false, message: '', icon: '' });
+
+        function showToast(msg, icon = 'fa-solid fa-circle-check') {
+            toast.value = { show: true, message: msg, icon };
+            setTimeout(() => { toast.value.show = false; }, 3000);
+        }
+
+        // Profile & Farm State
+        const profile = ref({
+            name: '',
+            startDate: new Date().toISOString().substring(0, 10),
+            cropYear: '2569',
+            address: '',
+            phone: '',
+            lineId: '',
+            goals: { safe: true, household: true, share: true, reduceCost: false, sell: false },
+            areaType: { pots: false, potsCount: '', raisedBed: false, raisedBedCount: '', groundPlot: true, groundPlotCount: '2', totalSize: '1 งาน' },
+            location: { backyard: true, condo: false, rooftop: false, publicLand: false, other: '' }
+        });
+
+        // Registered Plot List with Management & Crops
+        const plotList = ref([]);
+
+        function addNewPlot() {
+            const plotNum = plotList.value.length + 1;
+            plotList.value.push({
+                name: `แปลงที่ ${plotNum}`,
+                areaType: 'แปลงดินบนพื้น',
+                size: '1.2 x 5 เมตร',
+                soilStatus: 'พร้อมปลูก (สมบูรณ์)',
+                mulchType: 'ฟางข้าวคลุมดิน',
+                trellisType: 'ไม่มี',
+                managementNotes: '',
+                crops: [
+                    { name: '', plantDate: new Date().toISOString().substring(0, 10), harvestDate: '', spacing: '', seedSource: 'เก็บเมล็ดเอง', status: 'กำลังเติบโต' }
+                ]
+            });
+            showToast('เพิ่มแปลงเกษตรใหม่เรียบร้อยแล้ว');
+        }
+
+        function removePlot(index) {
+            plotList.value.splice(index, 1);
+            showToast('ลบแปลงเกษตรแล้ว');
+        }
+
+        function addCropToPlot(plot) {
+            if (!plot.crops) plot.crops = [];
+            plot.crops.push({
+                name: '',
+                plantDate: new Date().toISOString().substring(0, 10),
+                harvestDate: '',
+                spacing: '',
+                seedSource: 'เก็บเมล็ดเอง',
+                status: 'กำลังเติบโต'
+            });
+            showToast(`เพิ่มรายการพืชใน ${plot.name || 'แปลง'}`);
+        }
+
+        // Farm Canvas State
+        const canvasTool = ref('pen');
+        const canvasColor = ref('#15803d');
+        const canvasLineWidth = ref('2');
+        const isDrawing = ref(false);
+        const canvasDataUrl = ref(null);
+
+        // Logs State
+        const soilLogs = ref([]);
+        const waterLogs = ref([]);
+        const fertilizerLogs = ref([]);
+        const ipmLogs = ref([]);
+        const harvestLogs = ref([]);
+        const utilizationLogs = ref([]);
+
+        // Reflection State
+        const reflection = ref({
+            healthDimension: '',
+            economicDimension: '',
+            socialDimension: '',
+            environmentDimension: '',
+            lessonsLearned: '',
+            futurePlan: ''
+        });
+
+        // Computed Properties
+        const totalExpenses = computed(() => {
+            return soilLogs.value.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
+        });
+
+        const totalIncome = computed(() => {
+            return utilizationLogs.value.reduce((sum, item) => sum + ((Number(item.sellKg) || 0) * (Number(item.pricePerUnit) || 0)), 0);
+        });
+
+        const netProfit = computed(() => totalIncome.value - totalExpenses.value);
+
+        const totalHarvestWeight = computed(() => {
+            return harvestLogs.value.reduce((sum, item) => sum + (Number(item.weightKg) || 0), 0);
+        });
+
+        const totalConsumedWeight = computed(() => {
+            return utilizationLogs.value.reduce((sum, item) => sum + (Number(item.consumeKg) || 0), 0);
+        });
+
+        const totalSharedWeight = computed(() => {
+            return utilizationLogs.value.reduce((sum, item) => sum + (Number(item.shareKg) || 0), 0);
+        });
+
+        const estimatedSelfRelianceSavings = computed(() => {
+            return utilizationLogs.value.reduce((sum, item) => sum + ((Number(item.consumeKg) || 0) * 40), 0);
+        });
+
+        function initCanvas() {
+            if (!farmCanvas.value) return;
+            const ctx = farmCanvas.value.getContext('2d');
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, farmCanvas.value.width, farmCanvas.value.height);
+            saveCanvasData();
+        }
+
+        function startDrawing(e) {
+            isDrawing.value = true;
+            const ctx = farmCanvas.value.getContext('2d');
+            const rect = farmCanvas.value.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        function draw(e) {
+            if (!isDrawing.value) return;
+            const ctx = farmCanvas.value.getContext('2d');
+            const rect = farmCanvas.value.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            ctx.lineWidth = canvasLineWidth.value;
+            ctx.lineCap = 'round';
+
+            if (canvasTool.value === 'eraser') {
+                ctx.strokeStyle = '#f8fafc';
+                ctx.lineWidth = 15;
+            } else {
+                ctx.strokeStyle = canvasColor.value;
+            }
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function handleTouchStart(e) { e.preventDefault(); startDrawing(e); }
+        function handleTouchMove(e) { e.preventDefault(); draw(e); }
+
+        function stopDrawing() {
+            if (isDrawing.value) {
+                isDrawing.value = false;
+                saveCanvasData();
+            }
+        }
+
+        function clearCanvas() {
+            initCanvas();
+            showToast('ล้างผืนผ้าใบเรียบร้อยแล้ว');
+        }
+
+        function saveCanvasData() {
+            if (farmCanvas.value) {
+                canvasDataUrl.value = farmCanvas.value.toDataURL('image/png');
+            }
+        }
+
+        function uploadMapImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    const ctx = farmCanvas.value.getContext('2d');
+                    ctx.drawImage(img, 0, 0, farmCanvas.value.width, farmCanvas.value.height);
+                    saveCanvasData();
+                    showToast('อัปโหลดภาพผังแปลงสำเร็จ');
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Attach Photo Helper
+        function attachPhoto(event, item) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxDim = 800;
+                    let w = img.width, h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    item.photo = canvas.toDataURL('image/jpeg', 0.7);
+                    showToast('แนบรูปถ่ายเรียบร้อยแล้ว');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Row Creators
+        function addSoilLog() {
+            soilLogs.value.push({ date: new Date().toISOString().substring(0, 10), plot: plotList.value[0]?.name || 'แปลงที่ 1', activity: '', materials: '', amount: '', source: 'ทำเอง', cost: 0, photo: null });
+        }
+        function addWaterLog() {
+            waterLogs.value.push({ date: new Date().toISOString().substring(0, 10), plot: plotList.value[0]?.name || 'แปลงที่ 1', method: 'รดด้วยสายยาง/ฝักบัว', duration: '', notes: '' });
+        }
+        function addFertilizerLog() {
+            fertilizerLogs.value.push({ date: new Date().toISOString().substring(0, 10), plot: plotList.value[0]?.name || 'แปลงที่ 1', type: '', amount: '', ratio: '', source: 'หมักทำเอง', photo: null });
+        }
+        function addIpmLog() {
+            ipmLogs.value.push({ date: new Date().toISOString().substring(0, 10), plot: plotList.value[0]?.name || 'แปลงที่ 1', pestFound: '', severity: 'น้อย', method: '', materials: '', effectiveness: 'ดีมาก', photo: null });
+        }
+        function addHarvestLog() {
+            harvestLogs.value.push({ date: new Date().toISOString().substring(0, 10), plot: plotList.value[0]?.name || 'แปลงที่ 1', crop: '', weightKg: 0, grade: 'เกรด A (สวยงาม)', postHarvest: '', notes: '', photo: null });
+        }
+        function addUtilizationLog() {
+            utilizationLogs.value.push({ date: new Date().toISOString().substring(0, 10), crop: '', totalKg: 0, consumeKg: 0, shareKg: 0, sellKg: 0, pricePerUnit: 0, channel: '' });
+        }
+
+        // Fill Sample Data
+        function fillSampleData() {
+            profile.value = {
+                name: 'นายสมชาย พอเพียง',
+                startDate: '2026-05-01',
+                cropYear: '2569',
+                address: '123 หมู่ 4 ต.คลองสาม อ.คลองหลวง จ.ปทุมธานี',
+                phone: '081-234-5678',
+                lineId: 'somchai_farm',
+                goals: { safe: true, household: true, share: true, reduceCost: true, sell: true },
+                areaType: { pots: true, potsCount: '10', raisedBed: true, raisedBedCount: '2', groundPlot: true, groundPlotCount: '3', totalSize: '2 งาน' },
+                location: { backyard: true, condo: false, rooftop: false, publicLand: false, other: '' }
+            };
+
+            plotList.value = [
+                {
+                    name: 'แปลงที่ 1 (แคร่ผักสลัด)',
+                    areaType: 'แปลงยกแคร่',
+                    size: '1.2 x 4 เมตร',
+                    soilStatus: 'กำลังปลูกพืช',
+                    mulchType: 'ฟางข้าวอบความชื้น',
+                    trellisType: 'มุ้งตาข่ายกันแมลง',
+                    managementNotes: 'ยกสูงจากพื้น 80 ซม. ป้องกันหอยทาก',
+                    crops: [
+                        { name: 'ผักกาดหอม (Green Oak)', plantDate: '2026-05-10', harvestDate: '2026-06-15', spacing: '100 ต้น (20x20 ซม.)', seedSource: 'ซื้อจากร้าน', status: 'เก็บเกี่ยวแล้ว' },
+                        { name: 'ผักเรดโอ๊ค (Red Oak)', plantDate: '2026-05-12', harvestDate: '2026-06-18', spacing: '80 ต้น (20x20 ซม.)', seedSource: 'แจก/เครือข่าย', status: 'กำลังเติบโต' }
+                    ]
+                },
+                {
+                    name: 'แปลงที่ 2 (กสิกรรมดินเปิด)',
+                    areaType: 'แปลงดินบนพื้น',
+                    size: '1.5 x 6 เมตร',
+                    soilStatus: 'พร้อมปลูก (สมบูรณ์)',
+                    mulchType: 'เศษหญ้าแห้งหนา 2 นิ้ว',
+                    trellisType: 'ไม่มี',
+                    managementNotes: 'หว่านถั่วพร้าปรับบำรุงดินก่อนปลูก',
+                    crops: [
+                        { name: 'ผักคะน้าฮ่องกง', plantDate: '2026-05-15', harvestDate: '2026-06-25', spacing: '200 ต้น (15x15 ซม.)', seedSource: 'เก็บเมล็ดเอง', status: 'กำลังเติบโต' }
+                    ]
+                },
+                {
+                    name: 'แปลงที่ 3 (ซุ้มไม้เลื้อย)',
+                    areaType: 'ซุ้มเลื้อย / นั่งร้าน',
+                    size: '2 x 3 เมตร',
+                    soilStatus: 'กำลังปลูกพืช',
+                    mulchType: 'ฟางข้าวคลุมโคน',
+                    trellisType: 'ค้างไม้ไผ่สานตารางขนาน',
+                    managementNotes: 'เด็ดยอดเพื่อให้แตกแขนงเลื้อยขึ้นซุ้ม',
+                    crops: [
+                        { name: 'ถั่วพู organic', plantDate: '2026-05-01', harvestDate: '2026-07-01', spacing: '12 กระถางใหญ่', seedSource: 'เก็บเมล็ดเอง', status: 'กำลังเติบโต' }
+                    ]
+                }
+            ];
+
+            soilLogs.value = [
+                { date: '2026-05-02', plot: 'แปลงที่ 2 (กสิกรรมดินเปิด)', activity: 'ไถพรวนดินและหว่านปุ๋ยพืชสด (ถั่วพร้า)', materials: 'เมล็ดถั่วพร้า + ปุ๋ยหมักหมักเอง', amount: '10 กก.', source: 'ทำเอง', cost: 150, photo: null },
+                { date: '2026-05-10', plot: 'แปลงที่ 1 (แคร่ผักสลัด)', activity: 'ขึ้นแปลงและรองพื้นด้วยปุ๋ยคอก', materials: 'ขี้งัวหมักชีวภาพ', amount: '3 กระสอบ', source: 'ทำเอง', cost: 0, photo: null }
+            ];
+
+            waterLogs.value = [
+                { date: '2026-05-16', plot: 'แปลงที่ 1 (แคร่ผักสลัด)', method: 'ระบบสเปรย์/มินิสปริงเกลอร์', duration: '10 นาที (เช้า-เย็น)', notes: 'น้ำสระในฟาร์ม' }
+            ];
+
+            fertilizerLogs.value = [
+                { date: '2026-05-25', plot: 'แปลงที่ 2 (กสิกรรมดินเปิด)', type: 'น้ำหมักมูลสุกร + จุลินทรีย์สังเคราะห์แสง', amount: '20 ลิตร', ratio: '200 ซีซี ต่อน้ำ 20 ลิตร', source: 'หมักทำเอง', photo: null }
+            ];
+
+            ipmLogs.value = [
+                { date: '2026-06-01', plot: 'แปลงที่ 2 (กสิกรรมดินเปิด)', pestFound: 'หนอนใยผักกัดเจาะใบ', severity: 'น้อย', method: 'ฉีดพ่นน้ำหมักยาสูบผสมสะเดา', materials: 'ยาสูบ + ใบสะเดา', effectiveness: 'ดีมาก', photo: null }
+            ];
+
+            harvestLogs.value = [
+                { date: '2026-06-15', plot: 'แปลงที่ 1 (แคร่ผักสลัด)', crop: 'ผักกาดหอม (Green Oak)', weightKg: 12.0, grade: 'เกรด A (สวยงาม)', postHarvest: 'ล้างคราบดิน บรรจุถุงเจาะรู', notes: 'สดกรอบ ไร้รอยแมลง', photo: null },
+                { date: '2026-06-25', plot: 'แปลงที่ 2 (กสิกรรมดินเปิด)', crop: 'ผักคะน้าฮ่องกง', weightKg: 15.5, grade: 'เกรด A (สวยงาม)', postHarvest: 'ล้างสะอาด คัดใบเสียออก', notes: 'ต้นใหญ่หวานกรอบ', photo: null }
+            ];
+
+            utilizationLogs.value = [
+                { date: '2026-06-16', crop: 'ผักกาดหอม (Green Oak)', totalKg: 12.0, consumeKg: 3.0, shareKg: 4.0, sellKg: 5.0, pricePerUnit: 60, channel: 'ขายเพื่อนร่วมงาน / แจกเพื่อนบ้าน' },
+                { date: '2026-06-26', crop: 'ผักคะน้าฮ่องกง', totalKg: 15.5, consumeKg: 3.5, shareKg: 4.0, sellKg: 8.0, pricePerUnit: 50, channel: 'ขายตลาดเขียวชุมชน / แจกญาติ' }
+            ];
+
+            reflection.value = {
+                healthDimension: 'ได้กินผักสดไร้สารพิษ สุขภาพกายแข็งแรงขึ้นจากการออกกำลังกายทำแปลง',
+                economicDimension: 'ประหยัดค่าผักเข้าบ้านได้กว่า 500 บาท และมีรายได้จากการขายผัก 700 บาท',
+                socialDimension: 'ได้แบ่งปันผักให้เพื่อนบ้าน สร้างความสัมพันธ์อันดีในชุมชน',
+                environmentDimension: 'ดินมีความร่วนซุยขึ้นอย่างเห็นได้ชัด ไส้เดือนและแมลงตัวดีกลับมา',
+                lessonsLearned: 'การใช้สารสกัดสะเดาช่วยควบคุมหนอนใยผักได้ดีหากฉีดพ่นสม่ำเสมอทุก 5-7 วัน',
+                futurePlan: 'ขยายแปลงปลูกผักสลัดเพิ่มเติม และทำโรงเรือนกางมุ้งกันแมลงช่วงหน้าฝน'
+            };
+
+            showToast('โหลดข้อมูลตัวอย่างเรียบร้อยแล้ว');
+        }
+
+        // Export MS Word
+        function exportWord() {
+            const htmlContent = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>แบบบันทึกบัญชีฟาร์ม</title>
+            <style>
+                body { font-family: 'Sarabun', 'TH Sarabun PSK', sans-serif; font-size: 14pt; }
+                table { border-collapse: collapse; width: 100%; margin-bottom: 15px; }
+                th, td { border: 1px solid #333; padding: 6px; font-size: 11pt; }
+                th { background-color: #f0f0f0; text-align: center; }
+                h1, h2, h3 { color: #15803d; }
+            </style>
+            </head>
+            <body>
+                ${document.getElementById('printable-doc').innerHTML}
+            </body>
+            </html>`;
+
+            const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `แบบบันทึกบัญชีฟาร์ม_${profile.value.name || 'ไร้ชื่อ'}.doc`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('ส่งออกเป็นไฟล์ Word สำเร็จ');
+        }
+
+        // Export PDF
+        function exportPDF() {
+            showToast('กำลังจัดเตรียมไฟล์ PDF...', 'fa-solid fa-spinner fa-spin');
+            currentTab.value = 'preview';
+            nextTick(() => {
+                const element = document.getElementById('printable-doc');
+                const opt = {
+                    margin: 8,
+                    filename: `แบบบันทึกบัญชีฟาร์ม_${profile.value.name || 'ไร้ชื่อ'}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save().then(() => {
+                    showToast('บันทึก PDF สำเร็จแล้ว');
+                });
+            });
+        }
+
+        // Backup / Restore JSON
+        function exportJSON() {
+            const data = {
+                profile: profile.value,
+                plotList: plotList.value,
+                soilLogs: soilLogs.value,
+                waterLogs: waterLogs.value,
+                fertilizerLogs: fertilizerLogs.value,
+                ipmLogs: ipmLogs.value,
+                harvestLogs: harvestLogs.value,
+                utilizationLogs: utilizationLogs.value,
+                reflection: reflection.value,
+                canvasDataUrl: canvasDataUrl.value
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Farm_Record_Backup_${new Date().toISOString().substring(0, 10)}.json`;
+            a.click();
+            showToast('สำรองข้อมูล JSON สำเร็จ');
+        }
+
+        function triggerImport() { fileInput.value.click(); }
+
+        function importJSON(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                try {
+                    const data = JSON.parse(evt.target.result);
+                    if (data.profile) profile.value = data.profile;
+                    if (data.plotList) plotList.value = data.plotList;
+                    if (data.soilLogs) soilLogs.value = data.soilLogs;
+                    if (data.waterLogs) waterLogs.value = data.waterLogs;
+                    if (data.fertilizerLogs) fertilizerLogs.value = data.fertilizerLogs;
+                    if (data.ipmLogs) ipmLogs.value = data.ipmLogs;
+                    if (data.harvestLogs) harvestLogs.value = data.harvestLogs;
+                    if (data.utilizationLogs) utilizationLogs.value = data.utilizationLogs;
+                    if (data.reflection) reflection.value = data.reflection;
+                    if (data.canvasDataUrl) { canvasDataUrl.value = data.canvasDataUrl; nextTick(restoreCanvas); }
+                    showToast('นำเข้าข้อมูลสำเร็จ');
+                } catch (err) {
+                    showToast('รูปแบบไฟล์ JSON ไม่ถูกต้อง', 'fa-solid fa-triangle-exclamation text-rose-400');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function tabClass(tab) {
+            return currentTab.value === tab 
+                ? 'bg-green-700 text-white shadow-sm px-3.5 py-2 rounded-xl flex items-center gap-1.5 font-bold transition'
+                : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition';
+        }
+
+        // Charts Initialization
+        let utilChartObj = null;
+        let finChartObj = null;
+
+        function renderCharts() {
+            if (currentTab.value !== 'analytics') return;
+            nextTick(() => {
+                // Utilization Chart
+                const ctx1 = document.getElementById('utilizationChart');
+                if (ctx1) {
+                    if (utilChartObj) utilChartObj.destroy();
+                    utilChartObj = new Chart(ctx1, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['บริโภคในบ้าน', 'แบ่งปัน/แจก', 'จำหน่าย'],
+                            datasets: [{
+                                data: [totalConsumedWeight.value, totalSharedWeight.value, utilizationLogs.value.reduce((s, i) => s + (Number(i.sellKg)||0), 0)],
+                                backgroundColor: ['#f59e0b', '#f43f5e', '#2563eb']
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+
+                // Finance Chart
+                const ctx2 = document.getElementById('financeChart');
+                if (ctx2) {
+                    if (finChartObj) finChartObj.destroy();
+                    finChartObj = new Chart(ctx2, {
+                        type: 'bar',
+                        data: {
+                            labels: ['รายได้รวม', 'ต้นทุนรวม', 'มูลค่าประหยัดค่าผัก'],
+                            datasets: [{
+                                label: 'จำนวนเงิน (บาท)',
+                                data: [totalIncome.value, totalExpenses.value, estimatedSelfRelianceSavings.value],
+                                backgroundColor: ['#10b981', '#f43f5e', '#8b5cf6']
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false }
+                    });
+                }
+            });
+        }
+
+        watch(currentTab, (newTab) => {
+            if (newTab === 'analytics') renderCharts();
+        });
+
+        // ---- บันทึกอัตโนมัติลงเครื่อง (LocalStorage) เพื่อใช้งานออฟไลน์ได้ ----
+        const STORAGE_KEY = 'farm_account_data_v1';
+        let saveTimer = null, quotaWarned = false;
+
+        function saveNow() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    profile: profile.value, plotList: plotList.value,
+                    soilLogs: soilLogs.value, waterLogs: waterLogs.value,
+                    fertilizerLogs: fertilizerLogs.value, ipmLogs: ipmLogs.value,
+                    harvestLogs: harvestLogs.value, utilizationLogs: utilizationLogs.value,
+                    reflection: reflection.value, canvasDataUrl: canvasDataUrl.value
+                }));
+            } catch (e) {
+                if (!quotaWarned) {
+                    quotaWarned = true;
+                    showToast('พื้นที่เก็บข้อมูลในเครื่องเต็ม (รูปภาพมีขนาดใหญ่) โปรดกด "สำรอง JSON"', 'fa-solid fa-triangle-exclamation text-rose-400');
+                }
+            }
+        }
+        function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveNow, 600); }
+
+        function restoreCanvas() {
+            if (!farmCanvas.value || !canvasDataUrl.value) return;
+            const img = new Image();
+            img.onload = () => {
+                const ctx = farmCanvas.value.getContext('2d');
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(0, 0, farmCanvas.value.width, farmCanvas.value.height);
+                ctx.drawImage(img, 0, 0, farmCanvas.value.width, farmCanvas.value.height);
+            };
+            img.src = canvasDataUrl.value;
+        }
+
+        function loadSaved() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return false;
+                const d = JSON.parse(raw);
+                if (d.profile) profile.value = d.profile;
+                if (d.plotList) plotList.value = d.plotList;
+                if (d.soilLogs) soilLogs.value = d.soilLogs;
+                if (d.waterLogs) waterLogs.value = d.waterLogs;
+                if (d.fertilizerLogs) fertilizerLogs.value = d.fertilizerLogs;
+                if (d.ipmLogs) ipmLogs.value = d.ipmLogs;
+                if (d.harvestLogs) harvestLogs.value = d.harvestLogs;
+                if (d.utilizationLogs) utilizationLogs.value = d.utilizationLogs;
+                if (d.reflection) reflection.value = d.reflection;
+                if (d.canvasDataUrl) canvasDataUrl.value = d.canvasDataUrl;
+                restoreCanvas();
+                return true;
+            } catch (e) { console.error(e); return false; }
+        }
+
+        function confirmSample() {
+            if (confirm('ข้อมูลตัวอย่างจะแทนที่ข้อมูลที่กรอกไว้ทั้งหมด ต้องการดำเนินการต่อหรือไม่?')) fillSampleData();
+        }
+
+        onMounted(() => {
+            initCanvas();
+            if (!loadSaved()) fillSampleData();   // ครั้งแรกที่เปิด: แสดงข้อมูลตัวอย่างเหมือนเดิม
+            watch([profile, plotList, soilLogs, waterLogs, fertilizerLogs, ipmLogs, harvestLogs, utilizationLogs, reflection, canvasDataUrl],
+                  scheduleSave, { deep: true });
+            window.addEventListener('pagehide', saveNow);
+            document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); });
+            saveNow();
+        });
+
+        return {
+            currentTab, tabClass, profile, plotList, canvasTool, canvasColor, canvasLineWidth, farmCanvas,
+            canvasDataUrl, activeImageModal, toast, fileInput,
+            soilLogs, waterLogs, fertilizerLogs, ipmLogs, harvestLogs, utilizationLogs, reflection,
+            totalExpenses, totalIncome, netProfit, totalHarvestWeight, totalConsumedWeight, totalSharedWeight, estimatedSelfRelianceSavings,
+            addNewPlot, removePlot, addCropToPlot,
+            addSoilLog, addWaterLog, addFertilizerLog, addIpmLog, addHarvestLog, addUtilizationLog,
+            startDrawing, draw, stopDrawing, handleTouchStart, handleTouchMove, clearCanvas, uploadMapImage, attachPhoto,
+            fillSampleData, confirmSample, exportWord, exportPDF, exportJSON, triggerImport, importJSON
+        };
+    }
+}).mount('#app');
+</script>
+    <script src="pwa.js"></script>
+</body>
+</html>

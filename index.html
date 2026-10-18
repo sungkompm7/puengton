@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#065f46">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="กสิกรรมพึ่งตน">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <title>ศูนย์การเรียนรู้และบันทึกข้อมูลกสิกรรมไร้สารพิษ & สุขภาวะพึ่งตน</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sarabun: ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        farm: {
+                            50: '#f7fee7',
+                            100: '#ecfccb',
+                            500: '#84cc16',
+                            600: '#65a30d',
+                            700: '#4d7c0f',
+                            800: '#3f6212',
+                            900: '#1e3a12',
+                        },
+                        health: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+        .hero-pattern {
+            background-color: #064e3b;
+            background-image: radial-gradient(#10b981 0.75px, transparent 0.75px), radial-gradient(#10b981 0.75px, #064e3b 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            background-opacity: 0.1;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 antialiased selection:bg-emerald-500 selection:text-white flex flex-col min-h-screen">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-emerald-950 text-emerald-200 text-xs py-2 px-4 text-center border-b border-emerald-800/60 font-medium">
+        <span class="inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-seedling text-lime-400"></i>
+            ระบบบันทึกข้อมูลดิจิทัลเพื่อการเรียนรู้และพัฒนาตนเอง ตามแนวทางปรัชญาเศรษฐกิจพอเพียง
+        </span>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-lime-500 text-white flex items-center justify-center text-lg shadow-md">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 block">Self-Reliance Platform</span>
+                    <h1 class="text-base sm:text-lg font-bold text-stone-900 leading-tight">กสิกรรมไร้สารพิษ & สุขภาวะองค์รวม</h1>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                <a href="#applications" class="px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">ระบบบันทึก</a>
+                <a href="#features" class="hidden md:inline-block px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">คุณสมบัติเด่น</a>
+                <a href="#philosophy" class="hidden sm:inline-block px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">หลักการพึ่งตน</a>
+                <button data-pwa-install style="display:none" class="bg-lime-100 hover:bg-lime-200 text-emerald-900 px-3.5 py-1.5 rounded-xl font-semibold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-download text-xs"></i> <span>ติดตั้งแอป</span>
+                </button>
+                <button onclick="openViewerModal('farm.html', 'บัญชีฟาร์ม')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl font-semibold shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-play text-xs"></i> <span>ทดลองเปิดระบบ</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative hero-pattern text-white pt-16 pb-24 overflow-hidden">
+        <!-- Ambient Glow -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <span class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs px-3.5 py-1.5 rounded-full font-semibold mb-5 backdrop-blur-sm shadow-sm">
+                <i class="fa-solid fa-book-open-reader text-lime-300"></i> หลักสูตรการเรียนรู้และเครื่องมือบันทึกปฏิบัติการ
+            </span>
+
+            <h2 class="text-3xl sm:text-5xl font-extrabold leading-tight text-white mb-5 tracking-tight">
+                กสิกรรมไร้สารพิษและอาหาร<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-300 via-emerald-200 to-teal-300">
+                    เพื่อเศรษฐกิจและสุขภาวะพึ่งตนอย่างยั่งยืน
+                </span>
+            </h2>
+
+            <p class="text-sm sm:text-base text-emerald-100/90 max-w-3xl mx-auto mb-8 font-light leading-relaxed">
+                บูรณาการระหว่าง <strong>“การจัดการแปลงเกษตรธรรมชาติ”</strong> เพื่อสร้างความมั่นคงทางอาหาร และ <strong>“การดูแลสุขภาพพึ่งตนด้วยยา 9 เม็ด”</strong> 
+                ช่วยบันทึก วิเคราะห์ พัฒนา และถอดบทเรียนทุกมิติชีวิต พร้อมเครื่องมือส่งออกเอกสาร Word, PDF และกราฟสถิติครบวงจร
+            </p>
+
+            <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+                <a href="#applications" class="bg-gradient-to-r from-lime-500 to-emerald-600 hover:from-lime-600 hover:to-emerald-700 text-stone-950 font-bold px-6 py-3 rounded-2xl shadow-lg hover:shadow-emerald-500/30 transition transform hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-down"></i>
+                    <span>เลือกเข้าใช้งานสมุดบันทึก</span>
+                </a>
+                <a href="javascript:void(0)" onclick="openPreviewBoth()" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 font-semibold px-5 py-3 rounded-2xl backdrop-blur-sm transition text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-desktop"></i>
+                    <span>ดูตัวอย่างในหน้านี้ (Preview)</span>
+                </a>
+            </div>
+
+            <!-- Stats/Badges Strip -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-12 max-w-4xl mx-auto text-left">
+                <div class="bg-white/10 border border-white/15 p-3.5 rounded-2xl backdrop-blur-md">
+                    <div class="text-lime-300 font-bold text-lg"><i class="fa-solid fa-shield-halved"></i> 100% ปลอดภัย</div>
+                    <div class="text-[11px] text-emerald-100">เก็บข้อมูลในเครื่องคุณ (Local-First)</div>
+                </div>
+                <div class="bg-white/10 border border-white/15 p-3.5 rounded-2xl backdrop-blur-md">
+                    <div class="text-lime-300 font-bold text-lg"><i class="fa-solid fa-file-export"></i> เอกสารพร้อมส่ง</div>
+                    <div class="text-[11px] text-emerald-100">Export PDF และ Word ได้ทันที</div>
+                </div>
+                <div class="bg-white/10 border border-white/15 p-3.5 rounded-2xl backdrop-blur-md">
+                    <div class="text-lime-300 font-bold text-lg"><i class="fa-solid fa-chart-pie"></i> กราฟสถิติครบ</div>
+                    <div class="text-[11px] text-emerald-100">สรุปผลผลิต ต้นทุน และเรดาร์สุขภาวะ</div>
+                </div>
+                <div class="bg-white/10 border border-white/15 p-3.5 rounded-2xl backdrop-blur-md">
+                    <div class="text-lime-300 font-bold text-lg"><i class="fa-solid fa-mobile-screen-button"></i> ทุกอุปกรณ์</div>
+                    <div class="text-[11px] text-emerald-100">รองรับมือถือ แท็บเล็ต และคอมพิวเตอร์</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Applications Selector Section -->
+    <section id="applications" class="max-w-7xl mx-auto px-4 sm:px-6 -mt-10 relative z-20 pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <!-- APP CARD 1: FARM ACCOUNT -->
+            <div class="glass-card rounded-3xl border border-stone-200/80 shadow-xl overflow-hidden flex flex-col hover:border-emerald-500/50 transition duration-300 group">
+                <div class="bg-gradient-to-r from-emerald-800 to-lime-800 p-6 sm:p-7 text-white flex justify-between items-start">
+                    <div>
+                        <span class="inline-block bg-lime-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                            ระบบที่ 1 • แปลงเกษตร
+                        </span>
+                        <h3 class="text-2xl font-bold">แบบบันทึกบัญชีฟาร์ม</h3>
+                        <p class="text-xs sm:text-sm text-lime-200 mt-1">Farm Account Record & Soil Management</p>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl text-lime-300 group-hover:scale-110 transition duration-300">
+                        <i class="fa-solid fa-wheat-awn"></i>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-7 flex-grow flex flex-col justify-between space-y-6">
+                    <div class="space-y-4 text-xs sm:text-sm text-stone-600">
+                        <p class="leading-relaxed">
+                            ระบบบันทึกจัดการแปลงกสิกรรมไร้สารพิษ ตั้งแต่การวางผังพื้นที่ วงจรการเพาะปลูก ปัจจัยการผลิต ไปจนถึงการกระจายผลผลิตและการเงิน
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-lime-50/70 border border-lime-200 text-stone-700">
+                                <i class="fa-solid fa-paintbrush text-lime-600"></i>
+                                <span>ผืนผ้าใบวาดผังแปลง (Canvas)</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-lime-50/70 border border-lime-200 text-stone-700">
+                                <i class="fa-solid fa-layer-group text-emerald-600"></i>
+                                <span>ทะเบียนแปลง & พืชที่ปลูก</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-lime-50/70 border border-lime-200 text-stone-700">
+                                <i class="fa-solid fa-bug text-rose-500"></i>
+                                <span>บันทึก IPM & การจัดการศัตรูพืช</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-lime-50/70 border border-lime-200 text-stone-700">
+                                <i class="fa-solid fa-camera text-blue-600"></i>
+                                <span>แนบภาพกิจกรรม & ผลผลิต</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-lime-50/70 border border-lime-200 text-stone-700">
+                                <i class="fa-solid fa-basket-shopping text-amber-600"></i>
+                                <span>บันทึก กินในบ้าน / แจก / ขาย</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-lime-50/70 border border-lime-200 text-stone-700">
+                                <i class="fa-solid fa-chart-column text-teal-600"></i>
+                                <span>วิเคราะห์ต้นทุน-กำไรสุทธิ</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-4 border-t border-stone-100 flex flex-wrap gap-2.5">
+                        <a href="farm.html" class="flex-1 min-w-[150px] bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl text-center shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <span>เปิดใช้งานบัญชีฟาร์ม</span>
+                        </a>
+                        <button onclick="openViewerModal('farm.html', 'แบบบันทึกบัญชีฟาร์ม')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold py-3 px-4 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-1.5" title="พรีวิวในหน้านี้">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>พรีวิว</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APP CARD 2: HEALTH ACCOUNT -->
+            <div class="glass-card rounded-3xl border border-stone-200/80 shadow-xl overflow-hidden flex flex-col hover:border-teal-500/50 transition duration-300 group">
+                <div class="bg-gradient-to-r from-teal-800 to-emerald-900 p-6 sm:p-7 text-white flex justify-between items-start">
+                    <div>
+                        <span class="inline-block bg-teal-300 text-teal-950 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                            ระบบที่ 2 • สุขภาพพึ่งตน
+                        </span>
+                        <h3 class="text-2xl font-bold">สมุดบันทึกบัญชีสุขภาพ</h3>
+                        <p class="text-xs sm:text-sm text-teal-200 mt-1">Holistic Health & 9 Natural Remedies</p>
+                    </div>
+                    <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl text-teal-300 group-hover:scale-110 transition duration-300">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-7 flex-grow flex flex-col justify-between space-y-6">
+                    <div class="space-y-4 text-xs sm:text-sm text-stone-600">
+                        <p class="leading-relaxed">
+                            ระบบบันทึกและประเมินสุขภาวะองค์รวมตามหลักการแพทย์วิถีธรรม (ยา 9 เม็ด) เพื่อสังเกตพัฒนาการทางกาย จิตใจ สังคม และเศรษฐกิจ
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/70 border border-teal-200 text-stone-700">
+                                <i class="fa-solid fa-pills text-teal-600"></i>
+                                <span>การปฏิบัติยา 9 เม็ด + แนบรูป</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/70 border border-teal-200 text-stone-700">
+                                <i class="fa-solid fa-stethoscope text-amber-600"></i>
+                                <span>ตัวชี้วัด สบาย • เบากาย • มีกำลัง</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/70 border border-teal-200 text-stone-700">
+                                <i class="fa-solid fa-heart-circle-check text-rose-500"></i>
+                                <span>สัญญาณชีพ (BP, FBS, น้ำหนัก)</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/70 border border-teal-200 text-stone-700">
+                                <i class="fa-solid fa-brain text-purple-600"></i>
+                                <span>สุขภาวะ 4 ด้าน (จิต-วิญญาณ-สังคม-เงิน)</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/70 border border-teal-200 text-stone-700">
+                                <i class="fa-solid fa-book-bookmark text-indigo-600"></i>
+                                <span>ไดอารี่ถอดบทเรียน 6 เดือน</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-2.5 rounded-xl bg-teal-50/70 border border-teal-200 text-stone-700">
+                                <i class="fa-solid fa-chart-radar text-emerald-600"></i>
+                                <span>เรดาร์ชาร์ตเปรียบเทียบก่อน-หลัง</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-4 border-t border-stone-100 flex flex-wrap gap-2.5">
+                        <a href="health.html" class="flex-1 min-w-[150px] bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 px-4 rounded-xl text-center shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <span>เปิดใช้งานบัญชีสุขภาพ</span>
+                        </a>
+                        <button onclick="openViewerModal('health.html', 'สมุดบันทึกบัญชีสุขภาพ')" class="bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold py-3 px-4 rounded-xl transition text-xs sm:text-sm flex items-center justify-center gap-1.5" title="พรีวิวในหน้านี้">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>พรีวิว</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Core Philosophy Section -->
+    <section id="philosophy" class="py-16 bg-white border-y border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-emerald-700 font-bold text-xs uppercase tracking-wider bg-emerald-100/60 px-3 py-1 rounded-full">
+                    แนวคิดและความเชื่อมโยง
+                </span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-stone-900 mt-2">
+                    จากดินสู่จาน จากอาหารสู่สุขภาวะพึ่งตน
+                </h3>
+                <p class="text-stone-500 text-xs sm:text-sm mt-2">
+                    การทำกสิกรรมไร้สารพิษไม่ได้เป็นเพียงแค่การปลูกพืช แต่คือการสร้างปัจจัยพื้นฐานเพื่อสุขภาพที่แข็งแรง และเป็นรากฐานของความพอเพียง 4 ประการ
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Pillar 1 -->
+                <div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-emerald-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-bowl-rice"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-stone-900 mb-1">กินดี (Good Food)</h4>
+                    <p class="text-xs text-stone-600 leading-relaxed">
+                        บริโภคอาหารที่ผลิตจากธรรมชาติ ไร้สารเคมี ปรุงรสตามสมดุลร้อนเย็น ร่างกายได้รับสารอาหารแท้จริง
+                    </p>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-teal-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-house-chimney-window"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-stone-900 mb-1">อยู่ดี (Good Living)</h4>
+                    <p class="text-xs text-stone-600 leading-relaxed">
+                        สัมผัสดิน น้ำ ลม และแสงแดดในแปลงเกษตร ได้ออกกำลังกาย ออกเหงื่อ พักผ่อนและผ่อนคลายในวิถีธรรมชาติ
+                    </p>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-amber-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-stone-900 mb-1">คิดดี (Good Mind)</h4>
+                    <p class="text-xs text-stone-600 leading-relaxed">
+                        ฝึกสติ ละความเร่งร้อน ปล่อยวางความเครียด มีความสุขกับความเรียบง่ายและผลผลิตที่งอกงามตามกาลเวลา
+                    </p>
+                </div>
+
+                <!-- Pillar 4 -->
+                <div class="p-6 rounded-2xl bg-stone-50 border border-stone-200 hover:border-indigo-500/50 transition">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-xl mb-4 font-bold">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <h4 class="font-bold text-base text-stone-900 mb-1">ทำดี (Good Deed)</h4>
+                    <p class="text-xs text-stone-600 leading-relaxed">
+                        แบ่งปันผลผลิตที่ปลอดภัยให้เพื่อนบ้าน เกื้อกูลสังคม และส่งต่อความรู้การพึ่งตนเองอย่างยั่งยืน
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-emerald-700 font-bold text-xs uppercase tracking-wider bg-emerald-100/60 px-3 py-1 rounded-full">คุณสมบัติเด่น</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 mt-4 mb-3">เครื่องมือบันทึกที่ใช้ได้จริงในแปลงและที่บ้าน</h2>
+                <p class="text-stone-600 text-sm sm:text-base">ติดตั้งลงมือถือครั้งเดียว ใช้งานต่อได้แม้ไม่มีสัญญาณอินเทอร์เน็ต</p>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 class="font-bold text-stone-900 mb-1">เก็บข้อมูลในเครื่องคุณ</h3>
+                    <p class="text-xs text-stone-600 leading-relaxed">บันทึกอัตโนมัติลงอุปกรณ์ ไม่ส่งข้อมูลขึ้นเซิร์ฟเวอร์ ข้อมูลสุขภาพเป็นของคุณคนเดียว</p>
+                </div>
+                <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-wifi"></i></div>
+                    <h3 class="font-bold text-stone-900 mb-1">ใช้งานออฟไลน์ได้</h3>
+                    <p class="text-xs text-stone-600 leading-relaxed">เปิดครั้งแรกตอนมีเน็ต ระบบจะเก็บทุกอย่างไว้ในเครื่อง หลังจากนั้นใช้ในไร่ได้เลย</p>
+                </div>
+                <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-file-export"></i></div>
+                    <h3 class="font-bold text-stone-900 mb-1">ส่งออก Word / PDF / JSON</h3>
+                    <p class="text-xs text-stone-600 leading-relaxed">สร้างเอกสารพร้อมส่ง และสำรองข้อมูลเป็นไฟล์ JSON เพื่อย้ายเครื่องหรือกันข้อมูลหาย</p>
+                </div>
+                <div class="bg-white border border-stone-200 rounded-2xl p-6 shadow-sm">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-xl mb-4"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h3 class="font-bold text-stone-900 mb-1">กราฟสถิติครบ</h3>
+                    <p class="text-xs text-stone-600 leading-relaxed">สรุปผลผลิต ต้นทุน-กำไร และเรดาร์สุขภาวะ เปรียบเทียบก่อน-หลังการปฏิบัติ</p>
+                </div>
+            </div>
+
+            <div class="mt-10 bg-emerald-900 text-emerald-50 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold">ติดตั้งเป็นแอปบนหน้าจอโฮม</h3>
+                    <p class="text-sm text-emerald-200 mt-1">Android / Chrome: กด "ติดตั้งแอป" • iPhone: Safari &rarr; แชร์ &rarr; เพิ่มไปยังหน้าจอโฮม</p>
+                </div>
+                <button data-pwa-install style="display:none" class="bg-lime-400 hover:bg-lime-300 text-emerald-950 font-bold px-5 py-2.5 rounded-xl shadow transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-download"></i> ติดตั้งแอป
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto bg-emerald-950 text-emerald-200 text-xs py-8 px-4 text-center">
+        <p class="font-semibold text-emerald-100 mb-1">กสิกรรมไร้สารพิษและอาหารเพื่อเศรษฐกิจและสุขภาวะพึ่งตน</p>
+        <p>ข้อมูลทั้งหมดถูกเก็บในอุปกรณ์ของคุณ • แนะนำให้กด "สำรอง JSON" เป็นระยะ</p>
+    </footer>
+
+    <!-- Preview Modal -->
+    <div id="viewerModal" class="fixed inset-0 z-50 hidden bg-stone-900/70 backdrop-blur-sm p-2 sm:p-6" onclick="if(event.target===this)closeViewerModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full h-full max-w-7xl mx-auto flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-stone-200 bg-stone-50">
+                <h3 id="viewerTitle" class="font-bold text-sm sm:text-base text-stone-900 truncate"></h3>
+                <div class="flex items-center gap-2 shrink-0">
+                    <a id="viewerOpen" href="#" class="text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg">เปิดเต็มหน้าจอ</a>
+                    <button onclick="closeViewerModal()" class="w-8 h-8 rounded-lg bg-stone-200 hover:bg-stone-300 text-stone-700" aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <iframe id="viewerFrame" class="flex-1 w-full bg-white" title="พรีวิวระบบ"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function openViewerModal(src, title) {
+            document.getElementById('viewerTitle').textContent = title || '';
+            document.getElementById('viewerOpen').setAttribute('href', src);
+            document.getElementById('viewerFrame').src = src;
+            document.getElementById('viewerModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeViewerModal() {
+            document.getElementById('viewerModal').classList.add('hidden');
+            document.getElementById('viewerFrame').src = 'about:blank';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeViewerModal(); });
+    </script>
+    <script src="pwa.js"></script>
+</body>
+</html>
