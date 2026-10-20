@@ -103,6 +103,7 @@
 
             <div class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                 <a href="#applications" class="px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">ระบบบันทึก</a>
+                <a href="#guide" class="hidden md:inline-block px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">คู่มือใช้งาน</a>
                 <a href="#features" class="hidden md:inline-block px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">คุณสมบัติเด่น</a>
                 <a href="#philosophy" class="hidden sm:inline-block px-3 py-1.5 rounded-lg text-stone-600 hover:text-emerald-700 font-medium transition">หลักการพึ่งตน</a>
                 <button data-pwa-install style="display:none" class="bg-lime-100 hover:bg-lime-200 text-emerald-900 px-3.5 py-1.5 rounded-xl font-semibold shadow-sm transition flex items-center gap-1.5">
@@ -145,6 +146,10 @@
                 <a href="javascript:void(0)" onclick="openPreviewBoth()" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 font-semibold px-5 py-3 rounded-2xl backdrop-blur-sm transition text-sm flex items-center gap-2">
                     <i class="fa-solid fa-desktop"></i>
                     <span>ดูตัวอย่างในหน้านี้ (Preview)</span>
+                </a>
+                <a href="#guide" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold px-5 py-3 rounded-2xl backdrop-blur-sm transition text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>อ่านคู่มือใช้งาน</span>
                 </a>
             </div>
 
@@ -300,6 +305,181 @@
                 </div>
             </div>
 
+        </div>
+    </section>
+
+    <!-- User Guide Section -->
+    <section id="guide" class="py-16 bg-white border-y border-stone-200 scroll-mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="max-w-3xl mb-10">
+                <span class="text-emerald-700 font-bold text-xs uppercase tracking-wider bg-emerald-100/60 px-3 py-1 rounded-full">คู่มือใช้งาน</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-stone-900 mt-4 mb-3">เริ่มบันทึกได้ในไม่กี่ขั้นตอน</h2>
+                <p class="text-stone-600 text-sm sm:text-base">เลือกสมุดที่ต้องการ กรอกข้อมูลตามแท็บ แล้วกลับมาบันทึกต่อได้จากอุปกรณ์และเบราว์เซอร์เดิม</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1">
+                    <h3 class="font-bold text-stone-900 text-lg mb-5">เริ่มต้นใช้งาน</h3>
+                    <ol class="space-y-5">
+                        <li class="flex gap-3">
+                            <span class="w-8 h-8 shrink-0 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center">1</span>
+                            <div><h4 class="font-semibold text-stone-800">เลือกสมุดบันทึก</h4><p class="text-sm text-stone-600 mt-1">เปิดบัญชีฟาร์มหรือบัญชีสุขภาพจากปุ่มด้านบนของแต่ละระบบ</p></div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="w-8 h-8 shrink-0 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center">2</span>
+                            <div><h4 class="font-semibold text-stone-800">กรอกข้อมูลตั้งต้น</h4><p class="text-sm text-stone-600 mt-1">เริ่มที่แท็บข้อมูลทะเบียน ระบุข้อมูลผู้บันทึกและรายละเอียดที่จำเป็น</p></div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="w-8 h-8 shrink-0 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center">3</span>
+                            <div><h4 class="font-semibold text-stone-800">บันทึกตามแท็บ</h4><p class="text-sm text-stone-600 mt-1">ใช้แท็บด้านบนเพื่อเพิ่มกิจกรรมหรือข้อมูลแต่ละช่วง ระบบบันทึกการเปลี่ยนแปลงให้อัตโนมัติ</p></div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="w-8 h-8 shrink-0 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center">4</span>
+                            <div><h4 class="font-semibold text-stone-800">ดูสรุปและส่งออก</h4><p class="text-sm text-stone-600 mt-1">เปิดแท็บสรุปผลเพื่อตรวจข้อมูล แล้วเลือกบันทึก Word หรือ PDF เมื่อต้องการเอกสาร</p></div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="lg:col-span-2 grid sm:grid-cols-2 gap-6">
+                    <article class="border-l-4 border-lime-500 bg-lime-50/60 p-5 sm:p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-wheat-awn text-lime-700 text-xl"></i>
+                            <h3 class="font-bold text-stone-900 text-lg">บัญชีฟาร์ม</h3>
+                        </div>
+                        <ol class="space-y-3 text-sm text-stone-700 list-decimal list-inside">
+                            <li>ลงทะเบียนผู้บันทึกและวาดผังฟาร์ม</li>
+                            <li>เพิ่มแปลงและพืชที่ปลูก</li>
+                            <li>บันทึกกิจกรรม เช่น เตรียมดิน ให้น้ำ ปุ๋ย และจัดการศัตรูพืช</li>
+                            <li>เพิ่มผลผลิตและเลือกการใช้ประโยชน์ เช่น บริโภค แบ่งปัน หรือจำหน่าย</li>
+                            <li>อ่านบทเรียนและสถิติจากแท็บสรุปผล</li>
+                        </ol>
+                        <a href="farm.html" class="inline-flex items-center gap-2 mt-5 text-sm font-bold text-emerald-800 hover:text-emerald-950">เปิดบัญชีฟาร์ม <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+
+                    <article class="border-l-4 border-teal-500 bg-teal-50/60 p-5 sm:p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-heart-pulse text-teal-700 text-xl"></i>
+                            <h3 class="font-bold text-stone-900 text-lg">บัญชีสุขภาพ</h3>
+                        </div>
+                        <ol class="space-y-3 text-sm text-stone-700 list-decimal list-inside">
+                            <li>กรอกข้อมูลผู้บันทึกสุขภาพ</li>
+                            <li>บันทึกสัญญาณชีพและข้อมูลสุขภาพกาย</li>
+                            <li>ลงบันทึกการปฏิบัติยา 9 เม็ดและตัวชี้วัด</li>
+                            <li>ประเมินสุขภาวะ 4 ด้านและเขียนไดอารี่รายเดือน</li>
+                            <li>ตรวจกราฟและสรุปผลจากแท็บสถิติ</li>
+                        </ol>
+                        <a href="health.html" class="inline-flex items-center gap-2 mt-5 text-sm font-bold text-teal-800 hover:text-teal-950">เปิดบัญชีสุขภาพ <i class="fa-solid fa-arrow-right"></i></a>
+                    </article>
+                </div>
+            </div>
+
+            <div class="mt-8 space-y-4">
+                <h3 class="font-bold text-stone-900 text-lg">คำแนะนำกรอกข้อมูลรายช่อง</h3>
+                <details class="border border-lime-200 rounded-xl bg-lime-50/40">
+                    <summary class="cursor-pointer px-5 py-4 font-bold text-stone-900">บัญชีฟาร์ม: ทะเบียนแปลง กิจกรรม ผลผลิต และบทเรียน</summary>
+                    <div class="px-5 pb-5 space-y-5 text-sm text-stone-700">
+                        <div>
+                            <h4 class="font-bold text-emerald-800 mb-2">ทะเบียนผู้บันทึกและภาพรวมพื้นที่</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>ชื่อ - สกุล:</strong> ชื่อผู้รับผิดชอบการบันทึก (ช่องที่มีเครื่องหมาย * ควรกรอก)</li>
+                                <li><strong>วันที่เริ่มบันทึก:</strong> วันที่เริ่มเก็บข้อมูลชุดนี้</li>
+                                <li><strong>ปีการปลูก (พ.ศ.):</strong> ปีเพาะปลูก เช่น 2569</li>
+                                <li><strong>ที่อยู่แปลง / ที่พักอาศัย, เบอร์โทรศัพท์, Line ID:</strong> ช่องทางติดต่อหรือที่ตั้ง ใช้กรอกเท่าที่สะดวก</li>
+                                <li><strong>เป้าหมายของแปลง:</strong> เลือกได้หลายข้อ เช่น ปลอดภัยเพื่อสุขภาพ บริโภคในครัวเรือน แบ่งปัน ลดต้นทุน หรือจำหน่าย</li>
+                                <li><strong>ลักษณะพื้นที่ปลูก:</strong> เลือกประเภทพื้นที่และใส่จำนวนกระถาง/แคร่/แปลงให้ตรงกับหน่วยที่แสดง จากนั้นระบุพื้นที่รวม เช่น 1 ไร่</li>
+                                <li><strong>สภาพแวดล้อมโดยรอบ:</strong> เลือกตำแหน่งที่ตรงกับพื้นที่จริง หากไม่มีตัวเลือกให้ใช้ช่อง “ลักษณะอื่นๆ”</li>
+                                <li><strong>แผนผัง:</strong> วาดตำแหน่งแปลงและสิ่งสำคัญ โดยให้ทิศเหนืออยู่ด้านบน หรืออัปโหลดภาพผังที่มีอยู่</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-emerald-800 mb-2">จัดการแปลงและพืชที่ปลูก</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>ชื่อ/รหัสแปลง:</strong> ตั้งชื่อให้จำแนกง่าย เช่น “แปลงผักข้างบ้าน”</li>
+                                <li><strong>ลักษณะแปลง, ขนาดแปลง / จำนวนกระถาง, สถานะสภาพดิน / แปลง:</strong> เลือกประเภทและสถานะปัจจุบัน พร้อมระบุขนาดหรือจำนวนตามจริง</li>
+                                <li><strong>วัสดุคลุมดิน, โครงสร้าง / ค้าง, บันทึกการดูแลจัดการแปลงพิเศษ:</strong> ระบุวัสดุหรือวิธีที่ใช้ หากไม่มีให้เว้นว่างหรือเขียนว่า “ไม่มี”</li>
+                                <li><strong>ชนิดพืช / พันธุ์:</strong> ชื่อพืชหรือพันธุ์ที่ลงปลูก</li>
+                                <li><strong>วันที่ปลูก / กำหนดเก็บเกี่ยว:</strong> เลือกวันที่จริงหรือวันที่คาดว่าจะเก็บเกี่ยว</li>
+                                <li><strong>จำนวน / ระยะปลูก:</strong> จำนวนต้นหรือระยะห่าง พร้อมหน่วย เช่น 200 ต้น หรือ 20 × 20 ซม.</li>
+                                <li><strong>แหล่งพันธุ์ / สถานะพืช:</strong> เลือกแหล่งเมล็ดพันธุ์และสถานะล่าสุดของพืช</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-emerald-800 mb-2">บันทึกกิจกรรมและผลผลิต</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>เตรียมดิน:</strong> วันที่, แปลง, กิจกรรมที่ทำ, วัสดุ/ปุ๋ย, ปริมาณพร้อมหน่วย, แหล่งที่มา, ต้นทุนเป็นบาท และภาพถ่ายถ้ามี</li>
+                                <li><strong>ให้น้ำ:</strong> วันที่, แปลง, วิธีให้น้ำ, ปริมาณหรือระยะเวลา และหมายเหตุ เช่น แหล่งน้ำหรือความถี่</li>
+                                <li><strong>ปุ๋ยและสารปรับปรุงดิน:</strong> วันที่, แปลง, ประเภท, ปริมาณพร้อมหน่วย, อัตราส่วนผสมเมื่อทำเอง, แหล่งที่มา และภาพถ่าย</li>
+                                <li><strong>จัดการศัตรูพืช (IPM):</strong> วันที่, แปลง, ศัตรูพืช/โรค, ระดับระบาด, วิธีจัดการ, วัสดุที่ใช้, ผลที่ได้ และภาพถ่าย</li>
+                                <li><strong>เก็บเกี่ยว:</strong> วันที่, แปลง, ชนิดผลผลิต, น้ำหนักเป็นกิโลกรัม, เกรด, การจัดการหลังเก็บเกี่ยว, หมายเหตุ และภาพถ่าย</li>
+                                <li><strong>ใช้ประโยชน์ผลผลิต:</strong> วันที่, ผลผลิต, ปริมาณรวม, ปริมาณที่กิน/แบ่งปัน/ขาย (กก.), ราคา/หน่วย และช่องทางขายหรือผู้รับแบ่งปัน รายได้รวมคำนวณให้อัตโนมัติ</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-emerald-800 mb-2">ถอดบทเรียน</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>สุขภาพ, เศรษฐกิจ, สังคม, นิเวศ:</strong> บันทึกผลที่สังเกตได้จริงในแต่ละด้าน เช่น สุขภาพหรืออาหารที่เปลี่ยนไป ค่าใช้จ่าย การแบ่งปัน และสภาพดิน/สิ่งแวดล้อม</li>
+                                <li><strong>บทเรียนสำคัญ:</strong> เขียนสิ่งที่ได้ผล อุปสรรค และวิธีแก้ไข</li>
+                                <li><strong>แผนการปรับปรุง:</strong> ระบุสิ่งที่จะทดลองหรือพัฒนาต่อในรอบถัดไป</li>
+                            </ul>
+                        </div>
+                    </div>
+                </details>
+
+                <details class="border border-teal-200 rounded-xl bg-teal-50/40">
+                    <summary class="cursor-pointer px-5 py-4 font-bold text-stone-900">บัญชีสุขภาพ: ข้อมูลตั้งต้น สัญญาณชีพ การประเมิน และไดอารี่</summary>
+                    <div class="px-5 pb-5 space-y-5 text-sm text-stone-700">
+                        <div>
+                            <h4 class="font-bold text-teal-800 mb-2">ข้อมูลผู้บันทึกและสัญญาณชีพ</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>ชื่อ - นามสกุล, อายุ, เพศ, วันที่เริ่มบันทึก:</strong> กรอกข้อมูลของผู้บันทึกและวันที่เริ่มติดตาม</li>
+                                <li><strong>เบอร์โทรศัพท์, ที่อยู่ปัจจุบัน:</strong> ข้อมูลติดต่อ กรอกเท่าที่ต้องการ</li>
+                                <li><strong>โรคประจำตัวหรือปัญหาสุขภาพ:</strong> ระบุเรื่องที่ต้องการติดตาม ไม่จำเป็นต้องใส่ข้อมูลที่ไม่สะดวกเปิดเผย</li>
+                                <li><strong>ตารางสัญญาณชีพ:</strong> ใส่ค่าก่อนเริ่มและค่ารายเดือนตามหน่วยของแต่ละแถว: น้ำหนัก (กก.), ความดัน (มม.ปรอท), น้ำตาลในเลือด (มก./ดล.), รอบเอว (นิ้ว) และชั่วโมงนอนเฉลี่ยต่อคืน</li>
+                                <li><strong>บันทึกเพิ่มเติมสัญญาณชีพ:</strong> เขียนผลตรวจหรือข้อสังเกตประกอบ พร้อมระบุวันที่/บริบทเมื่อช่วยให้เข้าใจข้อมูล</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-teal-800 mb-2">การปฏิบัติยา 9 เม็ด</h4>
+                            <ul class="space-y-1.5">
+                                <li>แต่ละแถวคือหัวข้อ: น้ำสมุนไพรปรับสมดุล, กัวซา, ดีท็อกซ์, แช่มือ/เท้า, พอก/ทา/หยอด/ประคบ/อบ/อาบ/เช็ด/ถู/สูดดม, โยคะ/กายบริหาร, อาหารปรับสมดุล, ธรรมะ/ละบาป/บำเพ็ญบุญ และรู้เพียร/รู้พัก</li>
+                                <li><strong>ก่อนเริ่ม:</strong> ระบุพฤติกรรมหรือสภาพก่อนเริ่มติดตาม</li>
+                                <li><strong>เดือนที่ 1-6:</strong> บันทึกสิ่งที่ปฏิบัติ ความสม่ำเสมอ หรือสิ่งที่เปลี่ยนแปลงในเดือนนั้น หากไม่ได้ทำให้ระบุว่าไม่ได้ปฏิบัติ</li>
+                                <li><strong>ข้อสังเกตและรูปภาพ:</strong> บันทึกอาการ/ผลที่สังเกตได้ และแนบภาพกิจกรรมเมื่อมี</li>
+                                <li><strong>สรุปเพิ่มเติม:</strong> ใช้สรุปภาพรวม ข้อสงสัย หรือสิ่งที่อยากติดตามต่อ</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-teal-800 mb-2">ตัวชี้วัดและสุขภาวะองค์รวม</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>ตัวชี้วัด 3 ประการ:</strong> ให้คะแนนความสบาย ความเบากาย และความมีกำลัง ในช่องก่อนเรียนรู้และแต่ละเดือน โดยใช้ระดับ 1-10 ตามความรู้สึกของตนเอง แล้วใช้ช่องคำอธิบายระบุเหตุผลหรือการเปลี่ยนแปลง</li>
+                                <li><strong>สุขภาวะ 4 ด้าน:</strong> ตอบคะแนนก่อนเรียนรู้และรายเดือนในแต่ละประเด็นด้านจิตใจ จิตวิญญาณ สังคม และเศรษฐกิจ ใช้เกณฑ์คะแนนที่แสดงบนหน้าแบบฟอร์มให้สม่ำเสมอ</li>
+                                <li><strong>บันทึกเพิ่มเติมรายด้าน:</strong> เขียนเหตุการณ์หรือเหตุผลประกอบคะแนน เช่น ความเครียด ความสัมพันธ์ การแบ่งปัน หรือการพึ่งตนเอง</li>
+                                <li><strong>สรุปภาพรวม 4 ด้าน:</strong> สรุปสิ่งที่เปลี่ยนแปลงและบทเรียนสำคัญโดยรวม</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-teal-800 mb-2">ไดอารี่รายเดือน</h4>
+                            <ul class="space-y-1.5">
+                                <li><strong>สิ่งที่ดี/ความสำเร็จ:</strong> สิ่งที่ทำได้หรือผลที่น่าพอใจในเดือนนั้น</li>
+                                <li><strong>อุปสรรคและแนวทางแก้ไข:</strong> ปัญหาที่พบและวิธีรับมือหรือสิ่งที่ทดลองแก้</li>
+                                <li><strong>สิ่งที่ตั้งใจทำเดือนถัดไป:</strong> เป้าหมายที่ทำได้จริงและติดตามผลได้</li>
+                            </ul>
+                        </div>
+                        <p class="border-t border-teal-200 pt-4 text-xs text-stone-600">กรอกเท่าที่มีข้อมูล ไม่ทราบหรือยังไม่มีข้อมูลสามารถเว้นว่างได้ ค่าตรวจสุขภาพควรบันทึกตามผลตรวจจริงและคำแนะนำจากบุคลากรทางการแพทย์</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="mt-8 grid sm:grid-cols-2 gap-4 border-t border-stone-200 pt-6">
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-database text-emerald-700 mt-1"></i>
+                    <p class="text-sm text-stone-700"><strong>สำรองข้อมูลเป็นระยะ:</strong> กด “สำรอง JSON” ในสมุดนั้น แล้วเก็บไฟล์ไว้ในที่ปลอดภัย เมื่อนำกลับมาใช้ให้เปิดสมุดเดิมและกด “นำเข้า” เลือกไฟล์สำรองของสมุดนั้น</p>
+                </div>
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-600 mt-1"></i>
+                    <p class="text-sm text-stone-700"><strong>ควรรู้:</strong> ข้อมูลอยู่ในเบราว์เซอร์ของอุปกรณ์นี้ ไม่ได้ซิงก์ข้ามเครื่อง หากเปลี่ยนเครื่องหรือล้างข้อมูลเบราว์เซอร์ ให้นำเข้าจากไฟล์สำรอง เปิดแอปครั้งแรกขณะออนไลน์ แล้วจึงใช้งานออฟไลน์ได้</p>
+                </div>
+            </div>
         </div>
     </section>
 

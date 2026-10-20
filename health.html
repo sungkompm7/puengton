@@ -49,6 +49,21 @@
             page-break-inside: avoid;
             break-inside: avoid;
         }
+        @media (max-width: 639px) {
+            input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="color"]),
+            select,
+            textarea {
+                font-size: 16px;
+            }
+            .overflow-x-auto table {
+                min-width: 760px;
+            }
+            .overflow-x-auto table input:not([type="file"]),
+            .overflow-x-auto table select {
+                min-width: 120px;
+                min-height: 44px;
+            }
+        }
         @media print {
             .no-print {
                 display: none !important;
