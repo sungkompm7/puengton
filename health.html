@@ -93,7 +93,7 @@
     <!-- Image Zoom Modal -->
     <div v-if="activeImageModal" class="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 cursor-pointer" @click="activeImageModal = null">
         <div class="relative bg-white p-2 rounded-2xl max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl" @click.stop>
-            <button @click="activeImageModal = null" class="absolute top-3 right-3 bg-slate-800/70 hover:bg-slate-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm z-10 transition">
+            <button @click="activeImageModal = null" class="absolute top-3 right-3 bg-slate-800/70 hover:bg-slate-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm z-10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <img :src="activeImageModal" class="max-w-full max-h-[80vh] object-contain rounded-xl">
@@ -101,7 +101,7 @@
     </div>
 
     <!-- Toast Notification Banner -->
-    <div v-if="toast.show" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-teal-500/30 text-xs sm:text-sm animate-bounce">
+    <div v-if="toast.show" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-teal-500/30 text-xs sm:text-sm animate-[...]">
         <i :class="toast.icon || 'fa-solid fa-circle-info'" class="text-teal-400 text-lg"></i>
         <span>{{ toast.message }}</span>
     </div>
@@ -182,9 +182,9 @@
                             หลักสูตรการเรียนรู้และบันทึกชีวิต
                         </span>
                         <h2 class="text-2xl sm:text-3xl font-extrabold mt-2 mb-2">กสิกรรมไร้สารพิษและอาหาร</h2>
-                        <p class="text-sm text-teal-100 leading-relaxed">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ครอบคลุมทุกมิติชีวิต ตามวิถีเศรษฐกิจพอเพียง</p>
+                        <p class="text-sm text-teal-100 leading-relaxed">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ครอบคลุมทุกมิติของการมีชีวิตที่ยั่งยืน</p>
                         <blockquote class="mt-4 border-l-4 border-amber-400 pl-3 italic text-xs text-amber-100">
-                            “สุขภาพดี เริ่มต้นที่ตัวเรา พึ่งตน พึ่งธรรมชาติ พึ่งพอเพียง เพื่อชีวิตที่มั่นคงและยั่งยืน”
+                            “สุขภาพดี เริ่มต้นที่ตัวเรา พึ่งตน พึ่งธรรมชาติ พึ่งพอเพียงและพร้อมรับการเปลี่ยนแปลง”
                         </blockquote>
                     </div>
                     <div class="absolute -right-10 -bottom-10 opacity-15 text-[180px] pointer-events-none">
@@ -197,13 +197,18 @@
                         <i class="fa-solid fa-user-check text-teal-600"></i>
                         ข้อมูลผู้บันทึกสุขภาพ
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">บันทึกข้อมูลส่วนบุคคลเพื่อการติดตามผลการดูแลสุขภาพในระยะยาว</p>
+                    <p class="text-xs text-slate-500 mt-1">บันทึกข้อมูลส่วนบุคคลเพื่อการติดตามผลการดูแลสุขภาพและการพึ่งตน</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล <span class="text-red-500">*</span></label>
                         <input type="text" v-model="profile.fullName" placeholder="เช่น นายสมชาย สุขใจ" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">เลขประจำตัว</label>
+                        <input type="text" v-model="profile.idNumber" placeholder="เช่น 1234567890123" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
                     </div>
 
                     <div>
@@ -231,15 +236,15 @@
                         <input type="tel" v-model="profile.phone" placeholder="08X-XXX-XXXX" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
                     </div>
 
-                    <div>
+                    <div class="md:col-span-3">
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ที่อยู่ปัจจุบัน</label>
                         <input type="text" v-model="profile.address" placeholder="ระบุที่อยู่..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">โรคประจำตัว หรือ ปัญหาสุขภาพหลักที่ต้องการปรับปรุง</label>
-                    <textarea v-model="profile.mainHealthIssues" rows="2" placeholder="เช่น ความดันโลหิตสูง, ไมเกรน, ภูมิแพ้, ร้อนในบ่อย, นอนไม่ค่อยหลับ..." class="w-full p-3 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none"></textarea>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">โรคประจำตัว หรือ ปัญหาสุขภาพหลักที่ต้องติดตาม</label>
+                    <textarea v-model="profile.mainHealthIssues" rows="2" placeholder="เช่น ความดันโลหิตสูง, ไมเกรน, ภูมิแพ้, โรคเบาหวาน..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm"></textarea>
                 </div>
 
                 <!-- Core Pillars Cards -->
@@ -269,7 +274,7 @@
                 <div class="mt-8 border-t border-slate-100 pt-6">
                     <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                         <i class="fa-solid fa-scale-balanced text-teal-600"></i>
-                        เกณฑ์ประเมินระดับคะแนน 10 ระดับ (1 = น้อยที่สุด / แย่ที่สุด | 10 = ดีมากที่สุด / ผาสุกที่สุด)
+                        เกณฑ์ประเมินระดับคะแนน 10 ระดับ (1 = น้อยที่สุด / แย่ที่สุด | 10 = ดีมากที่สุด)
                     </h3>
                     <div class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-2 text-center text-xs">
                         <div v-for="score in 10" :key="score" class="p-2.5 rounded-xl border transition" :class="getScoreBadgeStyle(score)">
@@ -289,7 +294,7 @@
                         <i class="fa-solid fa-heart-pulse text-rose-600"></i>
                         บันทึกสัญญาณชีพ & สุขภาพกายภาพรายเดือน
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">ติดตามพัฒนาการทางกายภาพเชิงประจักษ์ (เช่น น้ำหนัก, ความดัน, น้ำตาลในเลือด, การนอนหลับ)</p>
+                    <p class="text-xs text-slate-500 mt-1">ติดตามพัฒนาการทางกายภาพเชิงประจักษ์ (เช่น น้ำหนัก, ความดัน, น้ำตาล, รอบเอว, การนอนหลับ)</p>
                 </div>
 
                 <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scrollbar">
@@ -308,10 +313,10 @@
                                     <div class="text-[10px] text-slate-500">{{ item.unit }}</div>
                                 </td>
                                 <td class="p-1.5 border-l border-slate-200 bg-amber-50/30 text-center">
-                                    <input type="text" v-model="vitalsData[key].before" placeholder="-" class="w-full p-1.5 border rounded-lg text-xs text-center font-bold text-amber-900 focus:ring-1 focus:ring-rose-500 outline-none">
+                                    <input type="text" v-model="vitalsData[key].before" placeholder="-" class="w-full p-1.5 border rounded-lg text-xs text-center font-bold text-amber-900 focus:ring-2 focus:ring-amber-300 focus:outline-none">
                                 </td>
                                 <td v-for="m in 6" :key="m" class="p-1.5 border-l border-slate-200 text-center">
-                                    <input type="text" v-model="vitalsData[key]['m' + m]" placeholder="-" class="w-full p-1.5 border rounded-lg text-xs text-center font-bold text-slate-800 focus:ring-1 focus:ring-rose-500 outline-none">
+                                    <input type="text" v-model="vitalsData[key]['m' + m]" placeholder="-" class="w-full p-1.5 border rounded-lg text-xs text-center font-bold text-slate-800 focus:ring-2 focus:ring-slate-300 focus:outline-none">
                                 </td>
                             </tr>
                         </tbody>
@@ -323,1125 +328,118 @@
                         <i class="fa-solid fa-notes-medical text-rose-600"></i>
                         บันทึกเพิ่มเติมสัญญาณชีพ & ผลการตรวจสุขภาพจากแพทย์
                     </label>
-                    <textarea v-model="vitalsNotes" rows="3" placeholder="บันทึกผลการตรวจเลือด, ยาที่ปรับลดลง, หรือการเปลี่ยนแปลงของสัญญาณชีพ..." class="w-full p-3 text-xs border rounded-xl focus:ring-2 focus:ring-rose-500 outline-none"></textarea>
+                    <textarea v-model="vitalsNotes" rows="3" placeholder="บันทึกผลการตรวจเลือด, ยาที่ปรับลดลง, หรือการตรวจสุขภาพจากแพทย์ที่มีผลต่อการดูแลตัวเอง" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm"></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 2: MEDICINE 9 PILLS LOG -->
-        <div v-show="currentTab === 'med9'" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6">
-                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-pills text-teal-600"></i>
-                        1. แบบบันทึกการปฏิบัติในการดูแลสุขภาพพึ่งตนด้วยเทคนิค 9 ข้อ (ยา 9 เม็ด)
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">ระบุรายละเอียดการปฏิบัติตั้งแต่ก่อนเริ่ม จนถึงการติดตามผลรายเดือน พร้อมแนบรูปภาพประกอบ</p>
-                </div>
-
-                <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scrollbar">
-                    <table class="w-full text-xs text-left min-w-[1050px]">
-                        <thead class="bg-teal-50 text-teal-900 font-bold uppercase border-b border-teal-200">
-                            <tr>
-                                <th class="p-3 w-1/5">การปฏิบัติยา 9 เม็ด</th>
-                                <th class="p-2 text-center w-28 border-l border-teal-200 bg-amber-100/80 text-amber-900">ก่อนเริ่ม</th>
-                                <th v-for="m in 6" :key="m" class="p-2 text-center w-24 border-l border-teal-200">
-                                    เดือนที่ {{ m }}
-                                </th>
-                                <th class="p-3 border-l border-teal-200 w-52">ข้อสังเกต & รูปภาพประกอบ</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            <tr v-for="(item, key) in med9Items" :key="key" class="hover:bg-slate-50 transition">
-                                <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
-                                    <div class="text-teal-700 font-bold mb-0.5">เม็ดที่ {{ item.id }}</div>
-                                    <div>{{ item.title }}</div>
-                                </td>
-                                <!-- Column: Before / Baseline -->
-                                <td class="p-1.5 border-l border-slate-200 bg-amber-50/40 text-center">
-                                    <textarea v-model="med9Data[key].before" rows="3" placeholder="สภาวะการปฏิบัติก่อนเริ่ม..." class="w-full p-1.5 border rounded-lg text-[11px] focus:ring-1 focus:ring-teal-500 outline-none resize-none font-medium text-amber-950 bg-amber-50/30"></textarea>
-                                </td>
-                                <!-- Columns: Months 1 to 6 -->
-                                <td v-for="m in 6" :key="m" class="p-1.5 border-l border-slate-200 text-center">
-                                    <textarea v-model="med9Data[key]['m' + m]" rows="3" placeholder="รายละเอียด..." class="w-full p-1.5 border rounded-lg text-[11px] focus:ring-1 focus:ring-teal-500 outline-none resize-none"></textarea>
-                                </td>
-                                <!-- Column: Observation & Image Upload -->
-                                <td class="p-2 border-l border-slate-200 space-y-2 vertical-align-top">
-                                    <textarea v-model="med9Data[key].observation" rows="2" placeholder="อาการที่เปลี่ยนไป..." class="w-full p-1.5 border rounded-lg text-[11px] focus:ring-1 focus:ring-teal-500 outline-none resize-none"></textarea>
-                                    
-                                    <!-- Image Preview & Attachment Controls -->
-                                    <div class="pt-1 border-t border-slate-100 flex items-center justify-between">
-                                        <div v-if="med9Data[key].image" class="relative group inline-block">
-                                            <img :src="med9Data[key].image" class="w-16 h-16 object-cover rounded-lg border border-teal-300 shadow-sm cursor-pointer hover:opacity-90 transition" @click="openImageModal(med9Data[key].image)" title="คลิกเพื่อดูรูปขยาย">
-                                            <button @click="removeImage(key)" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center shadow hover:bg-rose-600 transition" title="ลบรูป">
-                                                <i class="fa-solid fa-xmark"></i>
-                                            </button>
-                                        </div>
-                                        <label v-else class="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 text-[11px] rounded-lg border border-teal-200 font-medium transition shadow-sm">
-                                            <i class="fa-solid fa-camera"></i>
-                                            <span>แนบรูปกิจกรรม</span>
-                                            <input type="file" accept="image/*" class="hidden" @change="handleImageUpload(key, $event)">
-                                        </label>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-6">
-                    <label class="block text-xs font-bold text-slate-700 mb-2 flex items-center gap-1">
-                        <i class="fa-solid fa-comment-dots text-teal-600"></i>
-                        สรุปบันทึกการปฏิบัติ ยา 9 เม็ด เพิ่มเติม
-                    </label>
-                    <textarea v-model="med9Notes" rows="3" placeholder="บันทึกข้อสรุป ภาพรวม หรือข้อสังเกตเพิ่มเติมเกี่ยวกับการปฏิบัติยา 9 เม็ด..." class="w-full p-3 text-xs border rounded-xl focus:ring-2 focus:ring-teal-500 outline-none"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 3: 3 HEALTH INDICATORS -->
-        <div v-show="currentTab === 'indicators'" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6">
-                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-stethoscope text-amber-600"></i>
-                        2. แบบบันทึกตัวชี้วัดสุขภาพตามหลักการแพทย์วิถีธรรม (3 ประการ)
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">ประเมินระดับคะแนน (1-10) จาก ความสบาย, ความเบากาย และความมีกำลัง</p>
-                </div>
-
-                <!-- Principles Explanation Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs mb-6">
-                    <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
-                        <div class="font-bold text-emerald-800 mb-1 flex items-center gap-1.5">
-                            <i class="fa-solid fa-face-smile"></i> สบาย
-                        </div>
-                        <p class="text-slate-600">จิตใจและร่างกายปลอดโปร่ง ไม่ตึงเครียด หรือเกิดความอึดอัด</p>
-                    </div>
-                    <div class="bg-teal-50 p-4 rounded-xl border border-teal-200">
-                        <div class="font-bold text-teal-800 mb-1 flex items-center gap-1.5">
-                            <i class="fa-solid fa-feather"></i> เบากาย
-                        </div>
-                        <p class="text-slate-600">อาการเจ็บป่วยทุเลาลง หรือรู้สึกร่างกายเบาสบาย คล่องตัว</p>
-                    </div>
-                    <div class="bg-amber-50 p-4 rounded-xl border border-amber-200">
-                        <div class="font-bold text-amber-800 mb-1 flex items-center gap-1.5">
-                            <i class="fa-solid fa-bolt"></i> มีกำลัง
-                        </div>
-                        <p class="text-slate-600">มีเรี่ยวแรงในการทำกิจวัตรประจำวันและการทำความดีได้อย่างต่อเนื่อง ไม่อ่อนเพลีย</p>
-                    </div>
-                </div>
-
-                <!-- Table for 3 indicators -->
-                <div class="overflow-x-auto rounded-xl border border-slate-200 custom-scrollbar">
-                    <table class="w-full text-xs text-left min-w-[700px]">
-                        <thead class="bg-amber-50 text-amber-900 font-bold border-b border-amber-200">
-                            <tr>
-                                <th class="p-3" rowspan="2">ตัวชี้วัดสุขภาพ</th>
-                                <th class="p-2 text-center border-l border-amber-200 bg-amber-100/80">ก่อนเรียนรู้</th>
-                                <th class="p-2 text-center border-l border-amber-200" colspan="6">หลังการเรียนรู้ยา 9 เม็ด (ระดับคะแนน 1-10)</th>
-                            </tr>
-                            <tr>
-                                <th class="p-2 text-center border-l border-amber-200 bg-amber-100/80">(1-10)</th>
-                                <th v-for="m in 6" :key="m" class="p-2 text-center w-20 border-l border-amber-200">เดือนที่ {{ m }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            <tr v-for="(label, key) in indicatorLabels" :key="key" class="hover:bg-slate-50 transition">
-                                <td class="p-3 font-bold text-slate-800">{{ label }}</td>
-                                <td class="p-2 border-l border-slate-200 bg-amber-50/30 text-center">
-                                    <select v-model="indicatorsData[key].before" class="w-full p-1 border rounded text-xs text-center font-bold text-amber-900 bg-white">
-                                        <option value="">-</option>
-                                        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                    </select>
-                                </td>
-                                <td v-for="m in 6" :key="m" class="p-2 border-l border-slate-200 text-center">
-                                    <select v-model="indicatorsData[key]['m' + m]" class="w-full p-1 border rounded text-xs text-center font-bold text-emerald-800 bg-white">
-                                        <option value="">-</option>
-                                        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-6">
-                    <label class="block text-xs font-bold text-slate-700 mb-2 flex items-center gap-1">
-                        <i class="fa-solid fa-comment-dots text-amber-600"></i>
-                        คำอธิบายเพิ่มเติมเกี่ยวกับตัวชี้วัดสุขภาพ
-                    </label>
-                    <textarea v-model="indicatorNotes" rows="3" placeholder="ระบุการเปลี่ยนแปลงของร่างกาย ความรู้สึกเบากาย หรือกำลังแรงกายเพิ่มเติม..." class="w-full p-3 text-xs border rounded-xl focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 4: HOLISTIC HEALTH (4 DOMAINS) -->
-        <div v-show="currentTab === 'holistic'" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6">
-                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-brain text-purple-600"></i>
-                        3. แบบบันทึกผลของการปฏิบัติยา 9 เม็ดต่อสุขภาวะองค์รวม (4 ด้าน)
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">ประเมินระดับคะแนน 1-10 พร้อมบันทึกข้อสังเกตถอดบทเรียนรายมิติ</p>
-                </div>
-
-                <div class="space-y-8">
-                    <!-- 3.1 Mental Health -->
-                    <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200">
-                        <h3 class="text-sm font-bold text-teal-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-brain text-teal-600"></i>
-                            3.1 การรับรู้การเปลี่ยนแปลงต่อสุขภาวะด้านจิตใจ
-                        </h3>
-                        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white custom-scrollbar mb-3">
-                            <table class="w-full text-xs text-left min-w-[700px]">
-                                <thead class="bg-slate-100 font-bold border-b border-slate-200">
-                                    <tr>
-                                        <th class="p-2.5">ประเด็นการรับรู้ด้านจิตใจ</th>
-                                        <th class="p-2 text-center w-24 border-l bg-amber-50">ก่อนเรียนรู้</th>
-                                        <th v-for="m in 6" :key="m" class="p-2 text-center w-16 border-l">เดือน {{ m }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    <tr v-for="(item, idx) in holisticQuestions.mental" :key="idx" class="hover:bg-slate-50">
-                                        <td class="p-2.5 font-medium">{{ idx + 1 }}. {{ item }}</td>
-                                        <td class="p-1.5 border-l bg-amber-50/30 text-center">
-                                            <select v-model="holisticData.mental[idx].before" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                        <td v-for="m in 6" :key="m" class="p-1.5 border-l text-center">
-                                            <select v-model="holisticData.mental[idx]['m' + m]" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-teal-800 mb-1">บันทึกเพิ่มเติมถอดบทเรียนด้านจิตใจ:</label>
-                            <textarea v-model="holisticDimensionNotes.mental" rows="2" placeholder="สภาวะจิตใจ การรับมือกับความเครียด ความโกรธ ความสงบ..." class="w-full p-2.5 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-teal-500 bg-white"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- 3.2 Spiritual Health -->
-                    <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200">
-                        <h3 class="text-sm font-bold text-purple-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-om text-purple-600"></i>
-                            3.2 การรับรู้การเปลี่ยนแปลงต่อสุขภาวะด้านจิตวิญญาณ
-                        </h3>
-                        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white custom-scrollbar mb-3">
-                            <table class="w-full text-xs text-left min-w-[700px]">
-                                <thead class="bg-slate-100 font-bold border-b border-slate-200">
-                                    <tr>
-                                        <th class="p-2.5">ประเด็นการรับรู้ด้านจิตวิญญาณ</th>
-                                        <th class="p-2 text-center w-24 border-l bg-amber-50">ก่อนเรียนรู้</th>
-                                        <th v-for="m in 6" :key="m" class="p-2 text-center w-16 border-l">เดือน {{ m }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    <tr v-for="(item, idx) in holisticQuestions.spiritual" :key="idx" class="hover:bg-slate-50">
-                                        <td class="p-2.5 font-medium">{{ idx + 1 }}. {{ item }}</td>
-                                        <td class="p-1.5 border-l bg-amber-50/30 text-center">
-                                            <select v-model="holisticData.spiritual[idx].before" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                        <td v-for="m in 6" :key="m" class="p-1.5 border-l text-center">
-                                            <select v-model="holisticData.spiritual[idx]['m' + m]" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-purple-800 mb-1">บันทึกเพิ่มเติมถอดบทเรียนด้านจิตวิญญาณ:</label>
-                            <textarea v-model="holisticDimensionNotes.spiritual" rows="2" placeholder="ความศรัทธาในความดี การลดละกิเลส การปล่อยวาง..." class="w-full p-2.5 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-purple-500 bg-white"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- 3.3 Social Health -->
-                    <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200">
-                        <h3 class="text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-users text-blue-600"></i>
-                            3.3 การรับรู้การเปลี่ยนแปลงต่อสุขภาวะด้านสังคม
-                        </h3>
-                        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white custom-scrollbar mb-3">
-                            <table class="w-full text-xs text-left min-w-[700px]">
-                                <thead class="bg-slate-100 font-bold border-b border-slate-200">
-                                    <tr>
-                                        <th class="p-2.5">ประเด็นการรับรู้ด้านสังคม</th>
-                                        <th class="p-2 text-center w-24 border-l bg-amber-50">ก่อนเรียนรู้</th>
-                                        <th v-for="m in 6" :key="m" class="p-2 text-center w-16 border-l">เดือน {{ m }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    <tr v-for="(item, idx) in holisticQuestions.social" :key="idx" class="hover:bg-slate-50">
-                                        <td class="p-2.5 font-medium">{{ idx + 1 }}. {{ item }}</td>
-                                        <td class="p-1.5 border-l bg-amber-50/30 text-center">
-                                            <select v-model="holisticData.social[idx].before" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                        <td v-for="m in 6" :key="m" class="p-1.5 border-l text-center">
-                                            <select v-model="holisticData.social[idx]['m' + m]" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-blue-800 mb-1">บันทึกเพิ่มเติมถอดบทเรียนด้านสังคม:</label>
-                            <textarea v-model="holisticDimensionNotes.social" rows="2" placeholder="สัมพันธภาพกับครอบครัว เพื่อนบ้าน การแบ่งปัน และจิตสาธารณะ..." class="w-full p-2.5 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-white"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- 3.4 Economic Health -->
-                    <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200">
-                        <h3 class="text-sm font-bold text-emerald-800 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-coins text-emerald-600"></i>
-                            3.4 การรับรู้การเปลี่ยนแปลงต่อสุขภาวะด้านเศรษฐกิจ
-                        </h3>
-                        <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white custom-scrollbar mb-3">
-                            <table class="w-full text-xs text-left min-w-[700px]">
-                                <thead class="bg-slate-100 font-bold border-b border-slate-200">
-                                    <tr>
-                                        <th class="p-2.5">ประเด็นการรับรู้ด้านเศรษฐกิจ</th>
-                                        <th class="p-2 text-center w-24 border-l bg-amber-50">ก่อนเรียนรู้</th>
-                                        <th v-for="m in 6" :key="m" class="p-2 text-center w-16 border-l">เดือน {{ m }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    <tr v-for="(item, idx) in holisticQuestions.economic" :key="idx" class="hover:bg-slate-50">
-                                        <td class="p-2.5 font-medium">{{ idx + 1 }}. {{ item }}</td>
-                                        <td class="p-1.5 border-l bg-amber-50/30 text-center">
-                                            <select v-model="holisticData.economic[idx].before" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                        <td v-for="m in 6" :key="m" class="p-1.5 border-l text-center">
-                                            <select v-model="holisticData.economic[idx]['m' + m]" class="w-full p-1 border rounded text-xs text-center font-bold">
-                                                <option value="">-</option>
-                                                <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-emerald-800 mb-1">บันทึกเพิ่มเติมถอดบทเรียนด้านเศรษฐกิจ:</label>
-                            <textarea v-model="holisticDimensionNotes.economic" rows="2" placeholder="การลดรายจ่ายค่ารักษาพยาบาล การทำอาหารทานเอง การพึ่งตนเอง..." class="w-full p-2.5 text-xs border rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 bg-white"></textarea>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="mt-6">
-                    <label class="block text-xs font-bold text-slate-700 mb-2 flex items-center gap-1">
-                        <i class="fa-solid fa-comment-dots text-purple-600"></i>
-                        สรุปภาพรวมสุขภาวะองค์รวม 4 ด้าน
-                    </label>
-                    <textarea v-model="holisticNotes" rows="3" placeholder="สรุปบทเรียนและผลลัพธ์การเปลี่ยนแปลงสุขภาวะในภาพรวม..." class="w-full p-3 text-xs border rounded-xl focus:ring-2 focus:ring-purple-500 outline-none"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB: MONTHLY REFLECTIONS JOURNAL (NEW DIMENSION) -->
-        <div v-show="currentTab === 'journal'" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6">
-                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-book-bookmark text-indigo-600"></i>
-                        4. บันทึกไดอารี่ & ถอดบทเรียนการปฏิบัติรายเดือน (เดือนที่ 1 - 6)
-                    </h2>
-                    <p class="text-xs text-slate-500 mt-1">บันทึกเหตุการณ์สำคัญ อุปสรรค วิธีแก้ปัญหา และความประทับใจในแต่ละเดือน</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div v-for="m in 6" :key="m" class="bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100 flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between border-b border-indigo-200/60 pb-2 mb-3">
-                                <span class="font-bold text-indigo-900 text-sm flex items-center gap-2">
-                                    <i class="fa-solid fa-calendar-day text-indigo-600"></i>
-                                    บันทึกไดอารี่ เดือนที่ {{ m }}
-                                </span>
-                                <span class="text-[10px] bg-indigo-200/60 text-indigo-800 px-2 py-0.5 rounded-full font-semibold">
-                                    Month {{ m }}
-                                </span>
-                            </div>
-
-                            <div class="space-y-3 text-xs">
-                                <div>
-                                    <label class="font-semibold text-slate-700 block mb-1">สิ่งที่ดี/ความสำเร็จในเดือนนี้:</label>
-                                    <textarea v-model="journalData['m' + m].success" rows="2" placeholder="เช่น ทำดีท็อกซ์ได้สม่ำเสมอ ร้อนในหาย..." class="w-full p-2 border rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none bg-white"></textarea>
-                                </div>
-                                <div>
-                                    <label class="font-semibold text-slate-700 block mb-1">อุปสรรค & แนวทางแก้ไข:</label>
-                                    <textarea v-model="journalData['m' + m].obstacle" rows="2" placeholder="เช่น งานยุ่ง ลืมดื่มน้ำย่านาง -> แก้โดยเตรียมใส่ขวดแช่ตู้เย็นไว้..." class="w-full p-2 border rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none bg-white"></textarea>
-                                </div>
-                                <div>
-                                    <label class="font-semibold text-slate-700 block mb-1">สิ่งที่ตั้งใจจะทำในเดือนถัดไป:</label>
-                                    <textarea v-model="journalData['m' + m].goal" rows="2" placeholder="เช่น ตั้งใจทำโยคะยืดเหยียดทุกเช้า 15 นาที..." class="w-full p-2 border rounded-xl focus:ring-1 focus:ring-indigo-500 outline-none bg-white"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 5: ANALYTICS & CHARTS -->
-        <div v-show="currentTab === 'analytics'" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
-                <div class="border-b border-slate-100 pb-4 mb-6 flex justify-between items-center flex-wrap gap-2">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-emerald-600"></i>
-                            สรุปผลวิเคราะห์พัฒนาการสุขภาพ (6 เดือน)
-                        </h2>
-                        <p class="text-xs text-slate-500 mt-1">แสดงแนวโน้มความเปลี่ยนแปลงของสัญญาณชีพ ตัวชี้วัด และสุขภาวะองค์รวม</p>
-                    </div>
-                    <button @click="renderCharts" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition shadow">
-                        <i class="fa-solid fa-rotate"></i> อัปเดตและรีเฟรชกราฟ
-                    </button>
-                </div>
-
-                <!-- Grid of Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Chart 1: 3 Health Indicators Progress -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                        <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-emerald-600"></i> แนวโน้มตัวชี้วัดสุขภาพ 3 ประการ
-                        </h3>
-                        <div class="relative h-64 w-full">
-                            <canvas id="indicatorsLineChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Chart 2: Holistic Health Domains Comparison -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                        <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-radar text-purple-600"></i> สุขภาวะองค์รวม 4 ด้าน (ก่อน VS เดือนที่ 6)
-                        </h3>
-                        <div class="relative h-64 w-full flex justify-center">
-                            <canvas id="holisticRadarChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 6: FULL DOCUMENT PREVIEW & PRINT FORMAT -->
-        <div v-show="currentTab === 'preview'" class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10">
-                <div class="flex justify-between items-center mb-6 no-print border-b pb-4 flex-wrap gap-3">
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-800">
-                            <i class="fa-solid fa-eye text-amber-600"></i> ตัวอย่างแบบฟอร์มฉบับเต็มสำหรับพิมพ์/บันทึก
-                        </h2>
-                        <p class="text-xs text-slate-500">รวมข้อมูลทุกมิติ ยา 9 เม็ด ตัวชี้วัด สัญญาณชีพ และไดอารี่ถอดบทเรียน</p>
-                    </div>
-                    <div class="flex gap-2 flex-wrap">
-                        <button @click="printDocument" class="bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-800 transition">
-                            <i class="fa-solid fa-print"></i> สั่งพิมพ์ / Print
-                        </button>
-                        <button @click="exportWord" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700 transition">
-                            <i class="fa-solid fa-file-word"></i> โหลด Word (.doc)
-                        </button>
-                        <button @click="exportPDF" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-rose-700 transition">
-                            <i class="fa-solid fa-file-pdf"></i> โหลด PDF (.pdf)
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Preview Document Content -->
-                <div id="document-to-export" class="space-y-8 text-xs leading-relaxed text-slate-900 bg-white p-4">
-                    
-                    <!-- Document Header -->
-                    <div class="text-center border-b-2 border-teal-800 pb-4">
-                        <h1 class="text-xl font-bold text-teal-900">หลักสูตรการเรียนรู้ กสิกรรมไร้สารพิษและอาหาร</h1>
-                        <p class="text-sm font-semibold text-teal-800">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ตามวิถีเศรษฐกิจพอเพียง</p>
-                        <h2 class="text-base font-extrabold mt-2 text-slate-900">สมุดบันทึกบัญชีสุขภาพทุกมิติ (บันทึกวันนี้ เพื่อสุขภาวะที่ดีในวันหน้า)</h2>
-                        
-                        <div class="mt-4 text-xs grid grid-cols-2 md:grid-cols-3 text-left gap-2 border border-slate-300 p-3 rounded-lg bg-slate-50">
-                            <div><strong>ชื่อ - สกุล:</strong> {{ profile.fullName || '-' }}</div>
-                            <div><strong>อายุ:</strong> {{ profile.age ? profile.age + ' ปี' : '-' }}</div>
-                            <div><strong>เพศ:</strong> {{ profile.gender || '-' }}</div>
-                            <div><strong>วันที่เริ่มบันทึก:</strong> {{ profile.startDate || '-' }}</div>
-                            <div><strong>เบอร์โทรศัพท์:</strong> {{ profile.phone || '-' }}</div>
-                            <div><strong>ที่อยู่:</strong> {{ profile.address || '-' }}</div>
-                            <div class="col-span-2 md:col-span-3"><strong>โรคประจำตัว/ปัญหาสุขภาพหลัก:</strong> {{ profile.mainHealthIssues || '-' }}</div>
-                        </div>
-                    </div>
-
-                    <!-- Section: Vital Signs Print Table -->
-                    <div class="page-break-avoid">
-                        <h3 class="font-bold text-sm text-rose-900 border-b pb-1 mb-2">สัญญาณชีพ & ผลตรวจกายภาพรายเดือน</h3>
-                        <table class="w-full text-[11px] border-collapse border border-slate-300 text-left">
-                            <thead class="bg-slate-100">
-                                <tr>
-                                    <th class="border border-slate-300 p-1.5 w-1/4">รายการ</th>
-                                    <th class="border border-slate-300 p-1 text-center bg-amber-50">ก่อนเริ่ม</th>
-                                    <th v-for="m in 6" :key="m" class="border border-slate-300 p-1 text-center">เดือน {{ m }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, key) in vitalItems" :key="key">
-                                    <td class="border border-slate-300 p-1.5 font-semibold">{{ item.title }} ({{ item.unit }})</td>
-                                    <td class="border border-slate-300 p-1 text-center font-bold bg-amber-50/50">{{ vitalsData[key].before || '-' }}</td>
-                                    <td v-for="m in 6" :key="m" class="border border-slate-300 p-1 text-center">{{ vitalsData[key]['m' + m] || '-' }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="mt-1.5"><strong>หมายเหตุสัญญาณชีพ:</strong> {{ vitalsNotes || '-' }}</p>
-                    </div>
-
-                    <!-- Section 1 Print Table -->
-                    <div class="page-break-avoid">
-                        <h3 class="font-bold text-sm text-teal-900 border-b pb-1 mb-2">1. แบบบันทึกการปฏิบัติ ยา 9 เม็ด</h3>
-                        <table class="w-full text-[11px] border-collapse border border-slate-300 text-left">
-                            <thead class="bg-slate-100">
-                                <tr>
-                                    <th class="border border-slate-300 p-1.5 w-1/5">ยา 9 เม็ด</th>
-                                    <th class="border border-slate-300 p-1 text-center bg-amber-50">ก่อนเริ่ม</th>
-                                    <th v-for="m in 6" :key="m" class="border border-slate-300 p-1 text-center">เดือน {{ m }}</th>
-                                    <th class="border border-slate-300 p-1.5 w-1/4">ข้อสังเกต & รูปภาพ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(item, key) in med9Items" :key="key">
-                                    <td class="border border-slate-300 p-1.5 font-semibold">เม็ดที่ {{ item.id }} {{ item.title }}</td>
-                                    <td class="border border-slate-300 p-1 text-center bg-amber-50/40 font-medium text-amber-950">{{ med9Data[key].before || '-' }}</td>
-                                    <td v-for="m in 6" :key="m" class="border border-slate-300 p-1 text-center">{{ med9Data[key]['m' + m] || '-' }}</td>
-                                    <td class="border border-slate-300 p-1.5">
-                                        <div>{{ med9Data[key].observation || '-' }}</div>
-                                        <div v-if="med9Data[key].image" class="mt-1">
-                                            <img :src="med9Data[key].image" class="max-w-[90px] max-h-[70px] object-cover rounded border border-slate-200">
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="mt-1.5"><strong>คำอธิบายเพิ่มเติมยา 9 เม็ด:</strong> {{ med9Notes || '-' }}</p>
-                    </div>
-
-                    <!-- Section 2 Print Table -->
-                    <div class="page-break-avoid">
-                        <h3 class="font-bold text-sm text-amber-900 border-b pb-1 mb-2">2. ตัวชี้วัดสุขภาพตามหลักการแพทย์วิถีธรรม (สบาย เบากาย มีกำลัง)</h3>
-                        <table class="w-full text-[11px] border-collapse border border-slate-300 text-center">
-                            <thead class="bg-slate-100">
-                                <tr>
-                                    <th class="border border-slate-300 p-1.5 text-left">ตัวชี้วัดสุขภาพ</th>
-                                    <th class="border border-slate-300 p-1.5 bg-amber-50">ก่อนเรียนรู้</th>
-                                    <th v-for="m in 6" :key="m" class="border border-slate-300 p-1.5">เดือน {{ m }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(label, key) in indicatorLabels" :key="key">
-                                    <td class="border border-slate-300 p-1.5 text-left font-bold">{{ label }}</td>
-                                    <td class="border border-slate-300 p-1.5 bg-amber-50/50 font-bold">{{ indicatorsData[key].before || '-' }}</td>
-                                    <td v-for="m in 6" :key="m" class="border border-slate-300 p-1.5">{{ indicatorsData[key]['m' + m] || '-' }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="mt-1.5"><strong>คำอธิบายเพิ่มเติมตัวชี้วัด:</strong> {{ indicatorNotes || '-' }}</p>
-                    </div>
-
-                    <!-- Section 3 Print Table -->
-                    <div class="page-break-avoid">
-                        <h3 class="font-bold text-sm text-purple-900 border-b pb-1 mb-2">3. สุขภาวะองค์รวม 4 ด้าน (คะแนน 1-10)</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <h4 class="font-bold text-xs text-teal-800 mb-1">3.1 ด้านจิตใจ</h4>
-                                <ul class="list-disc pl-4 space-y-0.5 text-[10px]">
-                                    <li v-for="(q, idx) in holisticQuestions.mental" :key="idx">
-                                        {{ q }}: <span class="font-bold">ก่อน = {{ holisticData.mental[idx]?.before || '-' }}, เดือน 6 = {{ holisticData.mental[idx]?.m6 || '-' }}</span>
-                                    </li>
-                                </ul>
-                                <p class="mt-1 text-[10px]"><strong>บันทึกด้านจิตใจ:</strong> {{ holisticDimensionNotes.mental || '-' }}</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-xs text-purple-800 mb-1">3.2 ด้านจิตวิญญาณ</h4>
-                                <ul class="list-disc pl-4 space-y-0.5 text-[10px]">
-                                    <li v-for="(q, idx) in holisticQuestions.spiritual" :key="idx">
-                                        {{ q }}: <span class="font-bold">ก่อน = {{ holisticData.spiritual[idx]?.before || '-' }}, เดือน 6 = {{ holisticData.spiritual[idx]?.m6 || '-' }}</span>
-                                    </li>
-                                </ul>
-                                <p class="mt-1 text-[10px]"><strong>บันทึกด้านจิตวิญญาณ:</strong> {{ holisticDimensionNotes.spiritual || '-' }}</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-xs text-blue-800 mb-1">3.3 ด้านสังคม</h4>
-                                <ul class="list-disc pl-4 space-y-0.5 text-[10px]">
-                                    <li v-for="(q, idx) in holisticQuestions.social" :key="idx">
-                                        {{ q }}: <span class="font-bold">ก่อน = {{ holisticData.social[idx]?.before || '-' }}, เดือน 6 = {{ holisticData.social[idx]?.m6 || '-' }}</span>
-                                    </li>
-                                </ul>
-                                <p class="mt-1 text-[10px]"><strong>บันทึกด้านสังคม:</strong> {{ holisticDimensionNotes.social || '-' }}</p>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-xs text-emerald-800 mb-1">3.4 ด้านเศรษฐกิจ</h4>
-                                <ul class="list-disc pl-4 space-y-0.5 text-[10px]">
-                                    <li v-for="(q, idx) in holisticQuestions.economic" :key="idx">
-                                        {{ q }}: <span class="font-bold">ก่อน = {{ holisticData.economic[idx]?.before || '-' }}, เดือน 6 = {{ holisticData.economic[idx]?.m6 || '-' }}</span>
-                                    </li>
-                                </ul>
-                                <p class="mt-1 text-[10px]"><strong>บันทึกด้านเศรษฐกิจ:</strong> {{ holisticDimensionNotes.economic || '-' }}</p>
-                            </div>
-                        </div>
-                        <p class="mt-2 text-[11px]"><strong>คำอธิบายเพิ่มเติมสุขภาวะองค์รวม:</strong> {{ holisticNotes || '-' }}</p>
-                    </div>
-
-                    <!-- Section 4 Print Table -->
-                    <div class="page-break-avoid">
-                        <h3 class="font-bold text-sm text-indigo-900 border-b pb-1 mb-2">4. สรุปไดอารี่ & บทเรียนรายเดือน</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[10px]">
-                            <div v-for="m in 6" :key="m" class="border p-2 rounded bg-slate-50">
-                                <div class="font-bold text-indigo-900 mb-1 border-b pb-0.5">เดือนที่ {{ m }}</div>
-                                <div><strong>ความสำเร็จ:</strong> {{ journalData['m' + m].success || '-' }}</div>
-                                <div><strong>อุปสรรค & แก้ไข:</strong> {{ journalData['m' + m].obstacle || '-' }}</div>
-                                <div><strong>เป้าหมายถัดไป:</strong> {{ journalData['m' + m].goal || '-' }}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print mt-auto">
-        <p>สมุดบันทึกบัญชีสุขภาพทุกมิติ • กสิกรรมไร้สารพิษ พึ่งตน พึ่งธรรมชาติ พึ่งพอเพียงอย่างยั่งยืน</p>
-    </footer>
-</div>
-
-<script>
-const { createApp, ref, reactive, watch, onMounted, nextTick } = Vue;
-
-const app = createApp({
-    setup() {
-        const currentTab = ref('profile');
-        const fileInput = ref(null);
-        const activeImageModal = ref(null);
-
-        // Custom Toast Banner state
-        const toast = reactive({ show: false, message: '', icon: '' });
-        const showToast = (msg, icon = 'fa-solid fa-circle-check') => {
-            toast.message = msg;
-            toast.icon = icon;
-            toast.show = true;
-            setTimeout(() => { toast.show = false; }, 3500);
-        };
-
-        // Profile State
-        const profile = reactive({
-            fullName: '',
-            age: '',
-            gender: '',
-            startDate: new Date().toISOString().substr(0, 10),
-            address: '',
-            phone: '',
-            mainHealthIssues: ''
-        });
-
-        // Vital Signs State
-        const vitalItems = {
-            weight: { title: 'น้ำหนักตัว', unit: 'กิโลกรัม (kg)' },
-            bp: { title: 'ความดันโลหิต', unit: 'มม.ปรอท (mmHg)' },
-            fbs: { title: 'ระดับน้ำตาลในเลือด', unit: 'มก./ดล. (mg/dL)' },
-            waist: { title: 'รอบเอว', unit: 'นิ้ว (inches)' },
-            sleep: { title: 'การนอนหลับเฉลี่ย', unit: 'ชั่วโมง/คืน (hrs)' }
-        };
-
-        const vitalsData = reactive({
-            weight: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' },
-            bp: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' },
-            fbs: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' },
-            waist: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' },
-            sleep: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' }
-        });
-        const vitalsNotes = ref('');
-
-        // 9 Pills definition according to document
-        const med9Items = {
-            p1: { id: 1, title: 'การดื่มน้ำสมุนไพรปรับสมดุล' },
-            p2: { id: 2, title: 'การกัวซา' },
-            p3: { id: 3, title: 'การดีท็อกซ์' },
-            p4: { id: 4, title: 'การแช่มือ/แช่เท้าด้วยสมุนไพร' },
-            p5: { id: 5, title: 'การพอก ทา หยอด ประคบ อบ อาบ เช็ด ถู สูดดม' },
-            p6: { id: 6, title: 'การโยคะกายบริหาร' },
-            p7: { id: 7, title: 'การรับประทานอาหารปรับสมดุล' },
-            p8: { id: 8, title: 'การใช้ธรรมะ ละบาป บำเพ็ญบุญ' },
-            p9: { id: 9, title: 'การรู้เพียร รู้พัก' }
-        };
-
-        const med9Data = reactive({
-            p1: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p2: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p3: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p4: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p5: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p6: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p7: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p8: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' },
-            p9: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '', observation: '', image: '' }
-        });
-        const med9Notes = ref('');
-
-        const openImageModal = (imgUrl) => {
-            activeImageModal.value = imgUrl;
-        };
-
-        const handleImageUpload = (key, event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('image/')) {
-                showToast('กรุณาเลือกไฟล์รูปภาพเท่านั้น', 'fa-solid fa-triangle-exclamation');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    // Resize image to max 600px width/height for optimized storage
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-                    const maxSize = 600;
-
-                    if (width > height) {
-                        if (width > maxSize) {
-                            height = Math.round((height * maxSize) / width);
-                            width = maxSize;
-                        }
-                    } else {
-                        if (height > maxSize) {
-                            width = Math.round((width * maxSize) / height);
-                            height = maxSize;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                    med9Data[key].image = dataUrl;
-                    showToast('แนบรูปภาพกิจกรรมสำเร็จ!');
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-            event.target.value = '';
-        };
-
-        const removeImage = (key) => {
-            med9Data[key].image = '';
-            showToast('ลบรูปภาพแล้ว');
-        };
-
-        // Section 2: 3 Indicators
-        const indicatorLabels = {
-            comfort: 'ความสบาย (จิตใจและร่างกายปลอดโปร่ง ไม่ตึงเครียด)',
-            lightness: 'ความเบากาย (อาการเจ็บป่วยทุเลา เบาสบาย คล่องตัว)',
-            vitality: 'ความมีกำลัง (มีเรี่ยวแรงทำกิจวัตร ทำความดีได้ต่อเนื่อง)'
-        };
-
-        const indicatorsData = reactive({
-            comfort: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' },
-            lightness: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' },
-            vitality: { before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' }
-        });
-        const indicatorNotes = ref('');
-
-        // Section 3: Holistic Questions
-        const holisticQuestions = {
-            mental: [
-                'ความโกรธ ขี้หงุดหงิด ขี้โมโห',
-                'ความกลัว เช่น กลัวตาย กลัวโรค กลัวเรื่องร้าย',
-                'ความใจร้อน เร่งผล',
-                'ความเครียด / ความกังวลใจในเรื่องต่าง ๆ',
-                'ความเบิกบานใจ สดชื่น กระปรี้กระเปร่า',
-                'ความสงบ / ความหนักแน่น มั่นคงของจิตใจ'
-            ],
-            spiritual: [
-                'ความผาสุกของจิตวิญญาณ',
-                'ความศรัทธาในความดี',
-                'ความเชื่อและชัดเจนเรื่องกรรมและผลของกรรม',
-                'ความสามารถในการดับทุกข์ใจ',
-                'ความเข้าใจในการลดกิเลสในตน / การทำกุศลช่วยเหลือผู้อื่น'
-            ],
-            social: [
-                'ความมีจิตสาธารณะ ยินดี เต็มใจที่จะช่วยเหลือผู้อื่น',
-                'ความตั้งใจที่จะเป็นพลเมืองดีของสังคม',
-                'ความเข้าใจ / เห็นอกเห็นใจผู้อื่น',
-                'ความยินดี เต็มใจที่จะแบ่งปันให้กับผู้อื่น',
-                'ความรัก / เคารพ ศรัทธาในความดีของผู้อื่น',
-                'ความคิดแก่งแย่งแข่งขันชิงดีชิงเด่น'
-            ],
-            economic: [
-                'ความยึดติดในความสะดวกสบาย',
-                'ความยึดติดในสิ่งหรูหรา ฟุ้งเฟ้อ ฟุ่มเฟือย เกินจำเป็น',
-                'ความต้องการแสวงหา / สะสมทรัพย์สมบัติให้ได้มาก ๆ',
-                'ความมั่นใจในการพึ่งตนเอง ใช้ชีวิตแบบเรียบง่าย'
-            ]
-        };
-
-        const createInitHolistic = (questionsArr) => questionsArr.map(() => ({ before: '', m1: '', m2: '', m3: '', m4: '', m5: '', m6: '' }));
-
-        const holisticData = reactive({
-            mental: createInitHolistic(holisticQuestions.mental),
-            spiritual: createInitHolistic(holisticQuestions.spiritual),
-            social: createInitHolistic(holisticQuestions.social),
-            economic: createInitHolistic(holisticQuestions.economic)
-        });
-
-        const holisticDimensionNotes = reactive({
-            mental: '', spiritual: '', social: '', economic: ''
-        });
-        const holisticNotes = ref('');
-
-        // Monthly Reflections Journal State
-        const journalData = reactive({
-            m1: { success: '', obstacle: '', goal: '' },
-            m2: { success: '', obstacle: '', goal: '' },
-            m3: { success: '', obstacle: '', goal: '' },
-            m4: { success: '', obstacle: '', goal: '' },
-            m5: { success: '', obstacle: '', goal: '' },
-            m6: { success: '', obstacle: '', goal: '' }
-        });
-
-        // Helper functions
-        const getScoreBadgeStyle = (score) => {
-            if (score <= 3) return 'bg-red-50 border-red-200 text-red-700';
-            if (score <= 6) return 'bg-amber-50 border-amber-200 text-amber-800';
-            if (score <= 8) return 'bg-emerald-50 border-emerald-200 text-emerald-800';
-            return 'bg-teal-100 border-teal-300 text-teal-900 font-bold';
-        };
-
-        const getScoreLabel = (score) => {
-            const labels = ['แย่ที่สุด', 'รู้สึกไม่ดี', 'ค่อนข้างไม่ดี', 'ปานกลาง', 'รู้สึกเฉยๆ', 'ค่อนข้างดี', 'รู้สึกดี', 'ดีมาก', 'ประทับใจ', 'ดีมากที่สุด'];
-            return labels[score - 1] || '';
-        };
-
-        const tabClass = (tabName) => {
-            return currentTab.value === tabName 
-                ? 'bg-teal-700 text-white font-bold px-3.5 py-1.5 rounded-lg shadow-sm transition flex items-center gap-1.5'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5';
-        };
-
-        const fillSampleData = () => {
-            profile.fullName = 'นางสาวสมศรี มีสุข';
-            profile.age = '48';
-            profile.gender = 'หญิง';
-            profile.startDate = '2026-01-15';
-            profile.address = '99/1 หมู่ 3 ต.คลองสาม อ.คลองหลวง จ.ปทุมธานี';
-            profile.phone = '081-234-5678';
-            profile.mainHealthIssues = 'ความดันโลหิตค่อนข้างสูง ร้อนในบ่อย ปวดคอบ่าไหล่ นอนหลับยาก';
-
-            // Vitals Sample
-            vitalsData.weight = { before: '68', m1: '67', m2: '66', m3: '65', m4: '64.5', m5: '64', m6: '63.5' };
-            vitalsData.bp = { before: '142/90', m1: '138/86', m2: '132/84', m3: '128/82', m4: '125/80', m5: '122/80', m6: '120/78' };
-            vitalsData.fbs = { before: '118', m1: '112', m2: '108', m3: '102', m4: '98', m5: '95', m6: '92' };
-            vitalsData.waist = { before: '33', m1: '32.5', m2: '32', m3: '31.5', m4: '31', m5: '30.5', m6: '30' };
-            vitalsData.sleep = { before: '5', m1: '5.5', m2: '6', m3: '6.5', m4: '7', m5: '7', m6: '7.5' };
-            vitalsNotes.value = 'ระดับความดันโลหิตและน้ำตาลในเลือดปรับลดลงสู่เกณฑ์ปกติ อาการนอนหลับลึกขึ้นมาก';
-
-            med9Data.p1 = { before: 'ยังไม่เคยดื่มน้ำสมุนไพร', m1: 'น้ำสกัดย่านาง 1 แก้ว', m2: 'น้ำสกัดย่านาง 2 แก้ว', m3: 'ดื่มสม่ำเสมอ เช้า-เย็น', m4: 'ดื่มเมื่อรู้สึกร้อนตัว', m5: 'ดื่มปรับสมดุล daily', m6: 'ดื่มประจำ', observation: 'อาการร้อนในลดลงอย่างเห็นได้ชัด', image: '' };
-            med9Data.p2 = { before: 'ปวดตึงคอบ่าไหล่บ่อย ไม่เคยทำกัวซา', m1: 'ทำสัปดาห์ละ 1 ครั้ง', m2: 'ทำสัปดาห์ละ 2 ครั้ง', m3: 'ทำเมื่อตึงคอบ่าไหล่', m4: 'ทำต่อเนื่อง', m5: 'ทำสัปดาห์ละครั้ง', m6: 'ทำตามความจำเป็น', observation: 'เบาตัว หายปวดคอบ่าไหล่', image: '' };
-            med9Data.p3 = { before: 'ท้องผูกถ่ายยาก ไม่เคยดีท็อกซ์', m1: 'ดีท็อกซ์ด้วยน้ำย่านาง', m2: 'ทำสัปดาห์ละครั้ง', m3: 'ทำสัปดาห์ละครั้ง', m4: 'เดือนละ 2 ครั้ง', m5: 'ทำเมื่อรู้สึกอึดอัด', m6: 'ทำสม่ำเสมอ', observation: 'ระบบขับถ่ายดีขึ้นมาก พุงลดลง', image: '' };
-            med9Data.p4 = { before: 'ไม่เคยแช่มือแช่เท้าด้วยสมุนไพร', m1: 'แช่สัปดาห์ละครั้ง', m2: 'แช่ช่วงเย็น', m3: 'แช่ต่อเนื่อง', m4: 'แช่เมื่อปวดเมื่อย', m5: 'ทำตามสะดวก', m6: 'ทำประจำ', observation: 'มือเท้าคลายตึง หลับสบายขึ้น', image: '' };
-            med9Data.p5 = { before: 'ใช้ยาทาเคมีแผนปัจจุบัน', m1: 'พอกสมุนไพรเย็น', m2: 'พอกเมื่อมีอาการ', m3: 'ใช้อย่างสม่ำเสมอ', m4: 'พอกหน้าพอกตัว', m5: 'ใช้น้ำย่านางเช็ดหน้า', m6: 'ทำประจำ', observation: 'ผื่นคันลดลง ผิวพรรณสดใส', image: '' };
-            med9Data.p6 = { before: 'แทบไม่ได้ออกกำลังกาย ยืดเหยียดไม่ได้', m1: 'บริหาร 15 นาที', m2: 'โยคะยืดเส้น 20 นาที', m3: 'กายบริหารเช้า-เย็น', m4: 'ทำประจำ', m5: 'โยคะทุกวัน', m6: 'กายบริหารต่อเนื่อง', observation: 'ยืดเหยียดตัวได้ดีขึ้น ไม่ติดขัด', image: '' };
-            med9Data.p7 = { before: 'ทานอาหารรสจัด แปรรูป มัน ทอด บ่อย', m1: 'ลดเผ็ด ลดเค็ม', m2: 'ทานอาหารฤทธิ์เย็น', m3: 'ทานผักพื้นบ้านมากขึ้น', m4: 'เน้นกสิกรรมไร้สารพิษ', m5: 'ปรุงรสอ่อน', m6: 'ทานปรับสมดุลสม่ำเสมอ', observation: 'สบายท้อง ท้องไม่อืด', image: '' };
-            med9Data.p8 = { before: 'เครียดง่าย กังวล ฟุ้งซ่าน', m1: 'สวดมนต์ ทำสมาธิ', m2: 'ฝึกสติระหว่างวัน', m3: 'ทำบุญแบ่งปัน', m4: 'ละอารมณ์โกรธ', m5: 'จิตใจมั่นคง', m6: 'ปฏิบัติสม่ำเสมอ', observation: 'จิตใจผ่อนคลาย ปล่อยวางได้ง่ายขึ้น', image: '' };
-            med9Data.p9 = { before: 'ทำงานหักโหม พักผ่อนน้อย', m1: 'พักผ่อนให้ตรงเวลา', m2: 'รู้เพียรรู้พัก', m3: 'พักเมื่อเหนื่อย', m4: 'จัดเวลาชีวิตลงตัว', m5: 'พักผ่อนเพียงพอ', m6: 'ปฏิบัติเป็นนิสัย', observation: 'ร่างกายไม่เหนื่อยล้าสะสม มีพลังสดชื่น', image: '' };
-
-            // Indicators sample
-            indicatorsData.comfort = { before: 3, m1: 5, m2: 6, m3: 7, m4: 8, m5: 9, m6: 10 };
-            indicatorsData.lightness = { before: 4, m1: 5, m2: 6, m3: 8, m4: 8, m5: 9, m6: 9 };
-            indicatorsData.vitality = { before: 3, m1: 4, m2: 6, m3: 7, m4: 8, m5: 9, m6: 10 };
-
-            // Holistic sample
-            if (holisticData.mental[0]) holisticData.mental[0] = { before: 8, m1: 6, m2: 5, m3: 4, m4: 3, m5: 2, m6: 2 };
-            if (holisticData.mental[4]) holisticData.mental[4] = { before: 3, m1: 5, m2: 6, m3: 8, m4: 9, m5: 9, m6: 10 };
-            if (holisticData.spiritual[0]) holisticData.spiritual[0] = { before: 4, m1: 5, m2: 7, m3: 8, m4: 9, m5: 9, m6: 10 };
-            if (holisticData.social[0]) holisticData.social[0] = { before: 5, m1: 6, m2: 7, m3: 8, m4: 9, m5: 9, m6: 10 };
-            if (holisticData.economic[3]) holisticData.economic[3] = { before: 4, m1: 5, m2: 7, m3: 8, m4: 9, m5: 9, m6: 10 };
-
-            holisticDimensionNotes.mental = 'ควบคุมอารมณ์ได้ดีขึ้น ไม่ฉุนเฉียวเมื่อเจอสิ่งไม่ได้ดังใจ';
-            holisticDimensionNotes.spiritual = 'ปล่อยวางเรื่องราวภายนอกได้ง่ายขึ้น จิตใจสงบและผาสุก';
-            holisticDimensionNotes.social = 'ยินดีแบ่งปันผักไร้สารพิษและน้ำย่านางให้เพื่อนบ้าน';
-            holisticDimensionNotes.economic = 'ประหยัดค่าใช้จ่ายหมอยาได้มาก ทำอาหารไร้สารพิษทานเอง';
-
-            // Journal Sample
-            journalData.m1 = { success: 'เริ่มปรับตัวดื่มน้ำสมุนไพรและดีท็อกซ์สำเร็จ', obstacle: 'ยังไม่คุ้นชินรสชาติสมุนไพร', goal: 'ออกกำลังกายยืดเหยียดสม่ำเสมอขึ้น' };
-            journalData.m6 = { success: 'สุขภาพดีขึ้นทุกมิติ ไม่ต้องทานยาแก้ปวดอีกเลย', obstacle: 'ไม่มี', goal: 'ส่งต่อความรู้และสร้างแรงบันดาลใจให้ผู้อื่น' };
-
-            med9Notes.value = 'เมื่อปฏิบัติครบ 9 เม็ดอย่างต่อเนื่อง รู้สึกได้ชัดเจนว่าสุขภาพดีขึ้นตามลำดับ พึ่งตนเองได้มากขึ้น';
-            indicatorNotes.value = 'อาการเจ็บป่วยเรื้อรังลดลงเบาบาง มีเรี่ยวแรงสดชื่นตลอดวัน';
-            holisticNotes.value = 'จิตใจสงบเยือกเย็นขึ้น มีความสุขในการแบ่งปันและใช้ชีวิตอย่างพอเพียง';
-
-            showToast('ใส่ข้อมูลตัวอย่างเรียบร้อยแล้ว!');
-            if (currentTab.value === 'analytics') {
-                nextTick(() => renderCharts());
-            }
-        };
-
-        // Print Handler
-        const printDocument = () => {
-            window.print();
-        };
-
-        // Export to MS Word
-        const exportWord = () => {
-            const content = document.getElementById('document-to-export').innerHTML;
-            const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head><meta charset='utf-8'><title>แบบบันทึกบัญชีสุขภาพทุกมิติ</title>
-            <style>
-                body { font-family: 'Sarabun', Arial, sans-serif; font-size: 11pt; line-height: 1.5; }
-                table { border-collapse: collapse; width: 100%; margin-bottom: 15px; }
-                th, td { border: 1px solid #94a3b8; padding: 6px; text-align: left; vertical-align: top; }
-                th { background-color: #f1f5f9; font-weight: bold; }
-                h1, h2, h3 { color: #0f766e; font-family: 'Sarabun', Arial, sans-serif; }
-                .bg-amber-50 { background-color: #fffbeb; }
-            </style>
-            </head><body>`;
-            const footer = "</body></html>";
-            const sourceHTML = header + content + footer;
-
-            const blob = new Blob(['\ufeff', sourceHTML], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `แบบบันทึกบัญชีสุขภาพ_${profile.fullName || 'ผู้บันทึก'}.doc`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast('ส่งออกเอกสาร Word (.doc) สำเร็จ!');
-        };
-
-        // Export to PDF
-        const exportPDF = () => {
-            const element = document.getElementById('document-to-export');
-            showToast('กำลังประมวลผล PDF โปรดรอสักครู่...', 'fa-solid fa-spinner fa-spin');
-            
-            const opt = {
-                margin:       8,
-                filename:     `แบบบันทึกบัญชีสุขภาพ_${profile.fullName || 'ผู้บันทึก'}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-            };
-            
-            html2pdf().set(opt).from(element).save().then(() => {
-                showToast('ส่งออกไฟล์ PDF สำเร็จ!');
-            }).catch(err => {
-                showToast('เกิดข้อผิดพลาดในการสร้าง PDF', 'fa-solid fa-triangle-exclamation');
-            });
-        };
-
-        const exportJSON = () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-                profile, vitalsData, vitalsNotes: vitalsNotes.value,
-                med9Data, med9Notes: med9Notes.value,
-                indicatorsData, indicatorNotes: indicatorNotes.value,
-                holisticData, holisticDimensionNotes, holisticNotes: holisticNotes.value,
-                journalData
-            }, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `บัญชีสุขภาพ_${profile.fullName || 'ผู้บันทึก'}.json`);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            showToast('สำรองข้อมูล JSON สำเร็จ');
-        };
-
-        const triggerImport = () => { fileInput.value.click(); };
-
-        const importJSON = (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.profile) Object.assign(profile, data.profile);
-                    if (data.vitalsData) Object.assign(vitalsData, data.vitalsData);
-                    if (data.vitalsNotes !== undefined) vitalsNotes.value = data.vitalsNotes;
-                    if (data.med9Data) Object.assign(med9Data, data.med9Data);
-                    if (data.med9Notes !== undefined) med9Notes.value = data.med9Notes;
-                    if (data.indicatorsData) Object.assign(indicatorsData, data.indicatorsData);
-                    if (data.indicatorNotes !== undefined) indicatorNotes.value = data.indicatorNotes;
-                    if (data.holisticData) Object.assign(holisticData, data.holisticData);
-                    if (data.holisticDimensionNotes) Object.assign(holisticDimensionNotes, data.holisticDimensionNotes);
-                    if (data.holisticNotes !== undefined) holisticNotes.value = data.holisticNotes;
-                    if (data.journalData) Object.assign(journalData, data.journalData);
-                    showToast('นำเข้าข้อมูลสุขภาพเรียบร้อยแล้ว!');
-                } catch (err) {
-                    showToast('รูปแบบไฟล์ JSON ไม่ถูกต้อง', 'fa-solid fa-triangle-exclamation');
-                }
-            };
-            reader.readAsText(file);
-        };
-
-        let indicatorsChartInstance = null;
-        let holisticChartInstance = null;
-
-        const renderCharts = () => {
-            // Chart 1: Indicators Line Chart
-            const ctx1 = document.getElementById('indicatorsLineChart');
-            if (ctx1) {
-                if (indicatorsChartInstance) indicatorsChartInstance.destroy();
-
-                const months = ['ก่อน', 'เดือน 1', 'เดือน 2', 'เดือน 3', 'เดือน 4', 'เดือน 5', 'เดือน 6'];
-                const getDataArr = (key) => [
-                    indicatorsData[key]?.before || 0,
-                    indicatorsData[key]?.m1 || 0,
-                    indicatorsData[key]?.m2 || 0,
-                    indicatorsData[key]?.m3 || 0,
-                    indicatorsData[key]?.m4 || 0,
-                    indicatorsData[key]?.m5 || 0,
-                    indicatorsData[key]?.m6 || 0
-                ];
-
-                indicatorsChartInstance = new Chart(ctx1, {
-                    type: 'line',
-                    data: {
-                        labels: months,
-                        datasets: [
-                            { label: 'ความสบาย', data: getDataArr('comfort'), borderColor: '#059669', backgroundColor: '#05966922', tension: 0.3 },
-                            { label: 'ความเบากาย', data: getDataArr('lightness'), borderColor: '#0d9488', backgroundColor: '#0d948822', tension: 0.3 },
-                            { label: 'ความมีกำลัง', data: getDataArr('vitality'), borderColor: '#d97706', backgroundColor: '#d9770622', tension: 0.3 }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { y: { min: 0, max: 10 } }
-                    }
-                });
-            }
-
-            // Chart 2: Holistic Radar Chart
-            const ctx2 = document.getElementById('holisticRadarChart');
-            if (ctx2) {
-                if (holisticChartInstance) holisticChartInstance.destroy();
-
-                const getAvg = (arr, field) => {
-                    if (!Array.isArray(arr)) return 0;
-                    const valid = arr.map(i => parseFloat(i?.[field]) || 0).filter(v => v > 0);
-                    return valid.length ? (valid.reduce((a,b) => a+b, 0) / valid.length) : 0;
-                };
-
-                const beforeScores = [
-                    getAvg(holisticData.mental, 'before'),
-                    getAvg(holisticData.spiritual, 'before'),
-                    getAvg(holisticData.social, 'before'),
-                    getAvg(holisticData.economic, 'before')
-                ];
-
-                const month6Scores = [
-                    getAvg(holisticData.mental, 'm6'),
-                    getAvg(holisticData.spiritual, 'm6'),
-                    getAvg(holisticData.social, 'm6'),
-                    getAvg(holisticData.economic, 'm6')
-                ];
-
-                holisticChartInstance = new Chart(ctx2, {
-                    type: 'radar',
-                    data: {
-                        labels: ['จิตใจ', 'จิตวิญญาณ', 'สังคม', 'เศรษฐกิจ'],
-                        datasets: [
-                            { label: 'ก่อนเรียนรู้', data: beforeScores, borderColor: '#f59e0b', backgroundColor: '#f59e0b33' },
-                            { label: 'เดือนที่ 6', data: month6Scores, borderColor: '#10b981', backgroundColor: '#10b98133' }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { r: { min: 0, max: 10 } }
-                    }
-                });
-            }
-        };
-
-        function confirmSample() {
-            if (confirm('ข้อมูลตัวอย่างจะแทนที่ข้อมูลที่กรอกไว้ทั้งหมด ต้องการดำเนินการต่อหรือไม่?')) fillSampleData();
+        <script>
+        const { createApp, ref, reactive, watch, onMounted, nextTick } = Vue;
+
+        function sanitizeFilenameText(value) {
+            return String(value || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-zA-Z0-9ก-ฮๅฯะาิีุูเแโใไำ่้๊๋์\s._-]/g, '')
+                .trim();
         }
 
-        watch(currentTab, (newTab) => {
-            if (newTab === 'analytics') {
-                nextTick(() => renderCharts());
+        function getRecorderName() {
+            const rawName =
+                (this && this.profile && (this.profile.fullName || this.profile.name)) ||
+                'ผู้บันทึก';
+
+            const safeName = sanitizeFilenameText(rawName) || 'ผู้บันทึก';
+            return safeName;
+        }
+
+        function buildExportFileName(prefix = 'ข้อมูล') {
+            return `${prefix}_${getRecorderName.call(this)}`;
+        }
+
+        const app = createApp({
+            setup() {
+                const currentTab = ref('profile');
+                const fileInput = ref(null);
+                const activeImageModal = ref(null);
+
+                const toast = reactive({ show: false, message: '', icon: '' });
+                const showToast = (msg, icon = 'fa-solid fa-circle-check') => {
+                    toast.message = msg;
+                    toast.icon = icon;
+                    toast.show = true;
+                    setTimeout(() => { toast.show = false; }, 3500);
+                };
+
+                const profile = reactive({
+                    fullName: '',
+                    idNumber: '',
+                    age: '',
+                    gender: '',
+                    startDate: new Date().toISOString().substr(0, 10),
+                    address: '',
+                    phone: '',
+                    mainHealthIssues: ''
+                });
+
+                const exportWord = function() {
+                    const fileName = buildExportFileName.call(this, 'บัญชีสุขภาพ');
+                    const element = document.getElementById('document-to-export');
+                    html2pdf().set({
+                        margin: 0.25,
+                        filename: `${fileName}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    }).from(element).save();
+                };
+
+                const exportPDF = function() {
+                    const fileName = buildExportFileName.call(this, 'บัญชีสุขภาพ');
+                    const element = document.getElementById('document-to-export');
+                    html2pdf().set({
+                        margin: 0.25,
+                        filename: `${fileName}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    }).from(element).save();
+                };
+
+                const exportJSON = function() {
+                    const fileName = buildExportFileName.call(this, 'บัญชีสุขภาพ');
+                    const jsonData = JSON.stringify(this.$data, null, 2);
+                    const blob = new Blob([jsonData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${fileName}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+
+                return {
+                    currentTab,
+                    fileInput,
+                    activeImageModal,
+                    toast,
+                    profile,
+                    exportWord,
+                    exportPDF,
+                    exportJSON,
+                    showToast
+                };
             }
         });
 
-        // Auto Save & Restoring from LocalStorage
-        onMounted(() => {
-            const saved = localStorage.getItem('health_account_data_v2');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (parsed.profile) Object.assign(profile, parsed.profile);
-                    if (parsed.vitalsData) Object.assign(vitalsData, parsed.vitalsData);
-                    if (parsed.vitalsNotes !== undefined) vitalsNotes.value = parsed.vitalsNotes;
-                    if (parsed.med9Data) Object.assign(med9Data, parsed.med9Data);
-                    if (parsed.med9Notes !== undefined) med9Notes.value = parsed.med9Notes;
-                    if (parsed.indicatorsData) Object.assign(indicatorsData, parsed.indicatorsData);
-                    if (parsed.indicatorNotes !== undefined) indicatorNotes.value = parsed.indicatorNotes;
-                    if (parsed.holisticData) Object.assign(holisticData, parsed.holisticData);
-                    if (parsed.holisticDimensionNotes) Object.assign(holisticDimensionNotes, parsed.holisticDimensionNotes);
-                    if (parsed.holisticNotes !== undefined) holisticNotes.value = parsed.holisticNotes;
-                    if (parsed.journalData) Object.assign(journalData, parsed.journalData);
-                } catch (e) { console.error(e); }
-            }
-
-            watch([profile, vitalsData, vitalsNotes, med9Data, med9Notes, indicatorsData, indicatorNotes, holisticData, holisticDimensionNotes, holisticNotes, journalData], () => {
-                try { localStorage.setItem('health_account_data_v2', JSON.stringify({
-                    profile, vitalsData, vitalsNotes: vitalsNotes.value,
-                    med9Data, med9Notes: med9Notes.value,
-                    indicatorsData, indicatorNotes: indicatorNotes.value,
-                    holisticData, holisticDimensionNotes, holisticNotes: holisticNotes.value,
-                    journalData
-                })); } catch (e) { showToast('พื้นที่เก็บข้อมูลในเครื่องเต็ม โปรดกด "สำรอง JSON"', 'fa-solid fa-triangle-exclamation text-rose-400'); }
-            }, { deep: true });
-        });
-
-        return {
-            currentTab, tabClass, profile, toast, showToast,
-            vitalItems, vitalsData, vitalsNotes,
-            med9Items, med9Data, med9Notes,
-            activeImageModal, openImageModal, handleImageUpload, removeImage,
-            indicatorLabels, indicatorsData, indicatorNotes,
-            holisticQuestions, holisticData, holisticDimensionNotes, holisticNotes,
-            journalData,
-            getScoreBadgeStyle, getScoreLabel, fillSampleData, confirmSample, printDocument,
-            exportWord, exportPDF, exportJSON, triggerImport, importJSON, fileInput, renderCharts
-        };
-    }
-}).mount('#app');
-</script>
-    <script src="pwa.js"></script>
+        app.mount('#app');
+        </script>
+    </main>
+</div>
 </body>
 </html>
+
+
+
+
+
