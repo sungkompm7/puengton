@@ -25,57 +25,27 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #16a34a; border-radius: 4px; }
         .page-break-avoid { page-break-inside: avoid; break-inside: avoid; }
-        @media (max-width: 639px) {
-            input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="color"]), select, textarea { font-size: 16px; }
-            .overflow-x-auto table { min-width: 760px; }
-            .overflow-x-auto table input:not([type="file"]), .overflow-x-auto table select { min-width: 120px; min-height: 44px; }
-        }
-        @media print {
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            body { background: white; color: black; }
-            @page { size: A4 portrait; margin: 10mm; }
-        }
+        @media (max-width: 639px) { input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="color"]), select, textarea { font-size:16px; } }
+        @media print { .no-print { display:none !important; } .print-only { display:block !important; } body { background:white; color:black; } @page { size: A4 portrait; margin:10mm; } }
     </style>
 </head>
 <body class="bg-lime-50/50 min-h-screen flex flex-col">
 <div id="app" class="flex-grow flex flex-col relative">
-    <div v-if="activeImageModal" class="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4 cursor-pointer" @click="activeImageModal = null">
-        <div class="relative bg-white p-2 rounded-2xl max-w-3xl max-h-[90vh] overflow-hidden shadow-2xl" @click.stop>
-            <button @click="activeImageModal = null" class="absolute top-3 right-3 bg-stone-800/80 hover:bg-stone-900 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm z-10">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <img :src="activeImageModal" class="max-w-full max-h-[80vh] object-contain rounded-xl">
-        </div>
-    </div>
-
     <header class="bg-farm-gradient text-white shadow-md no-print sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-wrap justify-between items-center gap-3">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-white text-green-700 flex items-center justify-center text-xl font-bold shadow-md">
-                    <i class="fa-solid fa-wheat-awn"></i>
-                </div>
+                <div class="w-10 h-10 rounded-2xl bg-white text-green-700 flex items-center justify-center text-xl font-bold shadow-md"><i class="fa-solid fa-wheat-awn"></i></div>
                 <div>
                     <h1 class="text-lg sm:text-xl font-bold leading-tight">แบบบันทึกบัญชีฟาร์ม (กสิกรรมไร้สารพิษและอาหาร)</h1>
                     <p class="text-xs text-lime-200 hidden sm:block">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ตามวิถีเศรษฐกิจพอเพียง</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 text-xs flex-wrap gap-y-1.5">
-                <button @click="confirmSample" class="bg-lime-800 hover:bg-lime-900 text-lime-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>ใส่ข้อมูลตัวอย่าง</span>
-                </button>
-                <button @click="exportWord" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
-                    <i class="fa-solid fa-file-word"></i> <span>บันทึก Word</span>
-                </button>
-                <button @click="exportPDF" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
-                    <i class="fa-solid fa-file-pdf"></i> <span>บันทึก PDF</span>
-                </button>
-                <button @click="exportJSON" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
-                    <i class="fa-solid fa-download"></i> <span class="hidden md:inline">สำรอง JSON</span>
-                </button>
-                <button @click="triggerImport" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
-                    <i class="fa-solid fa-upload"></i> <span class="hidden md:inline">นำเข้า</span>
-                </button>
+                <button @click="confirmSample" class="bg-lime-800 hover:bg-lime-900 text-lime-100 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium"><i class="fa-solid fa-wand-magic-sparkles"></i> <span>ใส่ข้อมูลตัวอย่าง</span></button>
+                <button @click="exportWord" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium"><i class="fa-solid fa-file-word"></i> <span>บันทึก Word</span></button>
+                <button @click="exportPDF" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium"><i class="fa-solid fa-file-pdf"></i> <span>บันทึก PDF</span></button>
+                <button @click="exportJSON" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition"><i class="fa-solid fa-download"></i> <span class="hidden md:inline">สำรอง JSON</span></button>
+                <button @click="triggerImport" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition"><i class="fa-solid fa-upload"></i> <span class="hidden md:inline">นำเข้า</span></button>
                 <input type="file" ref="fileInput" class="hidden" accept=".json" @change="importJSON">
             </div>
         </div>
@@ -85,10 +55,9 @@
         <div class="max-w-7xl mx-auto px-4 flex space-x-1 sm:space-x-2 whitespace-nowrap text-xs sm:text-sm font-medium py-2">
             <button @click="currentTab = 'profile'" :class="tabClass('profile')"><i class="fa-solid fa-id-card"></i> 1. ทะเบียนผู้บันทึก & ผังฟาร์ม</button>
             <button @click="currentTab = 'plots'" :class="tabClass('plots')"><i class="fa-solid fa-layer-group text-emerald-600"></i> 2. จัดการแปลง & พืชที่ปลูก</button>
-            <button @click="currentTab = 'activity'" :class="tabClass('activity')"><i class="fa-solid fa-seedling text-green-600"></i> 3. กิจกรรมแปลง (มีแนบรูป)</button>
+            <button @click="currentTab = 'activity'" :class="tabClass('activity')"><i class="fa-solid fa-seedling text-green-600"></i> 3. กิจกรรมแปลง</button>
             <button @click="currentTab = 'harvest'" :class="tabClass('harvest')"><i class="fa-solid fa-basket-shopping text-amber-600"></i> 4. เก็บเกี่ยว & ใช้ประโยชน์</button>
-            <button @click="currentTab = 'reflections'" :class="tabClass('reflections')"><i class="fa-solid fa-book-open text-indigo-600"></i> 5. ถอดบทเรียน & ครบทุกมิติ</button>
-            <button @click="currentTab = 'analytics'" :class="tabClass('analytics')"><i class="fa-solid fa-chart-pie text-teal-600"></i> 6. สรุปผล & สถิติ</button>
+            <button @click="currentTab = 'review'" :class="tabClass('review')"><i class="fa-solid fa-book-open text-indigo-600"></i> 5. ถอดบทเรียน</button>
             <button @click="currentTab = 'preview'" :class="tabClass('preview')"><i class="fa-solid fa-print text-amber-600"></i> ตัวอย่างแบบฟอร์มฉบับเต็ม</button>
         </div>
     </nav>
@@ -98,135 +67,185 @@
             <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-5 sm:p-8">
                 <div class="bg-gradient-to-r from-green-800 via-emerald-800 to-lime-900 rounded-2xl p-6 text-white mb-6 shadow-md relative overflow-hidden">
                     <div class="relative z-10 max-w-3xl">
-                        <span class="inline-block bg-lime-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">หลักสูตรการเรียนรู้และบันทึกชีวิต</span>
+                        <span class="inline-block bg-lime-400 text-stone-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">หลักสูตรการเรียนรู้</span>
                         <h2 class="text-2xl sm:text-3xl font-bold">กสิกรรมไร้สารพิษและอาหารเพื่อเศรษฐกิจและสุขภาวะพึ่งตน</h2>
-                        <p class="text-sm text-lime-200 mt-1">ตามวิถีเศรษฐกิจพอเพียง • บันทึกข้อมูลการทำเกษตรแบบพึ่งตนเอง</p>
+                        <p class="text-sm text-lime-200 mt-1">ตามวิถีเศรษฐกิจพอเพียง • บันทึกข้อมูลการทำเกษตรแบบยั่งยืน</p>
                     </div>
                 </div>
 
-                <h3 class="text-lg font-bold text-stone-800 border-b pb-2 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-user-pen text-green-700"></i> ข้อมูลผู้บันทึก & แปลงเกษตร
-                </h3>
+                <h3 class="text-lg font-bold text-stone-800 border-b pb-2 mb-4 flex items-center gap-2"><i class="fa-solid fa-user-pen text-green-700"></i> ข้อมูลผู้บันทึก & แปลงเกษตร</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-sm">
                     <div>
                         <label class="block font-medium text-stone-700 mb-1">ชื่อ - สกุล <span class="text-rose-500">*</span></label>
-                        <input type="text" v-model="profile.name" placeholder="นาย/นาง/นางสาว..." class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                        <input type="text" v-model="profile.name" placeholder="นาย/นาง/นางสาว..." class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none bg-white">
                     </div>
                     <div>
                         <label class="block font-medium text-stone-700 mb-1">เลขประจำตัว</label>
-                        <input type="text" v-model="profile.idNumber" placeholder="เช่น 1234567890123" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                        <input type="text" v-model="profile.idNumber" placeholder="เช่น 1234567890123" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none bg-white">
                     </div>
                     <div>
                         <label class="block font-medium text-stone-700 mb-1">วันที่เริ่มบันทึก</label>
-                        <input type="date" v-model="profile.startDate" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                        <input type="date" v-model="profile.startDate" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none bg-white">
                     </div>
                     <div class="md:col-span-2">
                         <label class="block font-medium text-stone-700 mb-1">ที่อยู่แปลง / ที่พักอาศัย</label>
-                        <input type="text" v-model="profile.address" placeholder="บ้านเลขที่ หมู่ ตำบล อำเภอ จังหวัด..." class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
+                        <input type="text" v-model="profile.address" placeholder="บ้านเลขที่ หมู่ ตำบล อำเภอ จังหวัด..." class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none bg-white">
                     </div>
                     <div>
                         <label class="block font-medium text-stone-700 mb-1">เบอร์โทรศัพท์ / Line ID</label>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <input type="text" v-model="profile.phone" placeholder="เบอร์โทรศัพท์" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none">
-                            <input type="text" v-model="profile.lineId" placeholder="Line ID" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500">
+                            <input type="text" v-model="profile.phone" placeholder="เบอร์โทรศัพท์" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none bg-white">
+                            <input type="text" v-model="profile.lineId" placeholder="Line ID" class="w-full p-2.5 border border-stone-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none bg-white">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script>
-            const { createApp, ref, reactive, watch, onMounted, nextTick } = Vue;
+        <div v-show="currentTab === 'preview'" class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 sm:p-10">
+                <div class="flex justify-between items-center mb-6 no-print border-b pb-4 flex-wrap gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-stone-800"><i class="fa-solid fa-eye text-amber-600"></i> ตัวอย่างแบบฟอร์มฉบับเต็มสำหรับพิมพ์/บันทึก</h2>
+                        <p class="text-xs text-stone-500">ข้อมูลผู้บันทึก แปลงเกษตร และรายละเอียดการจัดการพื้นที่</p>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <button @click="printDocument" class="bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-slate-800 transition"><i class="fa-solid fa-print"></i> สั่งพิมพ์</button>
+                        <button @click="exportWord" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700 transition"><i class="fa-solid fa-file-word"></i> โหลด Word (.doc)</button>
+                        <button @click="exportPDF" class="bg-rose-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-rose-700 transition"><i class="fa-solid fa-file-pdf"></i> โหลด PDF (.pdf)</button>
+                    </div>
+                </div>
 
-            function sanitizeFilenameText(value) {
-                return String(value || '')
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^a-zA-Z0-9ก-ฮๅฯะาิีุูเแโใไำ่้๊๋์\s._-]/g, '')
-                    .trim();
-            }
-
-            function getRecorderName() {
-                const rawName =
-                    (this && this.profile && (this.profile.fullName || this.profile.name)) ||
-                    'ผู้บันทึก';
-
-                const safeName = sanitizeFilenameText(rawName) || 'ผู้บันทึก';
-                return safeName;
-            }
-
-            function buildExportFileName(prefix = 'ข้อมูล') {
-                return `${prefix}_${getRecorderName.call(this)}`;
-            }
-
-            const app = createApp({
-                setup() {
-                    const currentTab = ref('profile');
-                    const fileInput = ref(null);
-                    const activeImageModal = ref(null);
-                    const toast = reactive({ show: false, message: '', icon: '' });
-
-                    const profile = reactive({
-                        name: '',
-                        idNumber: '',
-                        startDate: new Date().toISOString().substr(0, 10),
-                        cropYear: '',
-                        address: '',
-                        phone: '',
-                        lineId: '',
-                        goals: { safe: false, household: false, share: false, reduceCost: false, sell: false },
-                        areaType: { pots: false, potsCount: '', raisedBed: false, raisedBedCount: '', groundPlot: false, groundPlotCount: '', totalSize: '' },
-                        location: { backyard: false, condo: false, rooftop: false, publicLand: false, other: '' },
-                    });
-
-                    const exportWord = function() {
-                        const fileName = buildExportFileName.call(this, 'บัญชีฟาร์ม');
-                        const element = document.body;
-                        html2pdf().set({
-                            margin: 0.25,
-                            filename: `${fileName}.pdf`,
-                            image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: { scale: 2 },
-                            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-                        }).from(element).save();
-                    };
-
-                    const exportPDF = function() {
-                        const fileName = buildExportFileName.call(this, 'บัญชีฟาร์ม');
-                        const element = document.body;
-                        html2pdf().set({
-                            margin: 0.25,
-                            filename: `${fileName}.pdf`,
-                            image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: { scale: 2 },
-                            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-                        }).from(element).save();
-                    };
-
-                    const exportJSON = function() {
-                        const fileName = buildExportFileName.call(this, 'บัญชีฟาร์ม');
-                        const jsonData = JSON.stringify(this.$data, null, 2);
-                        const blob = new Blob([jsonData], { type: 'application/json' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${fileName}.json`;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                    };
-
-                    return { currentTab, fileInput, activeImageModal, toast, profile, exportWord, exportPDF, exportJSON };
-                }
-            });
-
-            app.mount('#app');
-        </script>
+                <div id="document-to-export" class="space-y-8 text-xs leading-relaxed text-stone-900 bg-white p-4">
+                    <div class="text-center border-b-2 border-green-800 pb-4">
+                        <h1 class="text-xl font-bold text-green-900">บัญชีฟาร์มและการจัดการแปลงเกษตร</h1>
+                        <p class="text-sm font-semibold text-green-800">กสิกรรมไร้สารพิษและอาหาร เพื่อเศรษฐกิจและสุขภาวะพึ่งตน</p>
+                        <div class="mt-4 text-xs grid grid-cols-2 md:grid-cols-3 text-left gap-2 border border-stone-300 p-3 rounded-lg bg-stone-50">
+                            <div><strong>ชื่อ - สกุล:</strong> {{ profile.name || '-' }}</div>
+                            <div><strong>เลขประจำตัว:</strong> {{ profile.idNumber || '-' }}</div>
+                            <div><strong>วันที่เริ่มบันทึก:</strong> {{ profile.startDate || '-' }}</div>
+                            <div><strong>เบอร์โทรศัพท์:</strong> {{ profile.phone || '-' }}</div>
+                            <div><strong>Line ID:</strong> {{ profile.lineId || '-' }}</div>
+                            <div><strong>ที่อยู่:</strong> {{ profile.address || '-' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <footer class="bg-white border-t border-stone-200 py-4 text-center text-xs text-stone-500 no-print mt-auto">
+        <p>สมุดบันทึกบัญชีฟาร์ม • กสิกรรมไร้สารพิษ พึ่งตน พึ่งธรรมชาติ</p>
+    </footer>
 </div>
+
+<script>
+const { createApp, ref, reactive } = Vue;
+
+function sanitizeFilenameText(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9ก-ฮๅฯะาิีุูเแโใไำ่้๊๋์\s._-]/g, '')
+        .trim();
+}
+
+function getRecorderName() {
+    const rawName = (this && this.profile && (this.profile.fullName || this.profile.name)) || 'ผู้บันทึก';
+    const safeName = sanitizeFilenameText(rawName) || 'ผู้บันทึก';
+    return safeName;
+}
+
+function buildExportFileName(prefix = 'ข้อมูล') {
+    return `${prefix}_${getRecorderName.call(this)}`;
+}
+
+const app = createApp({
+    setup() {
+        const currentTab = ref('profile');
+        const fileInput = ref(null);
+        const activeImageModal = ref(null);
+
+        const profile = reactive({
+            name: '',
+            idNumber: '',
+            startDate: new Date().toISOString().substr(0, 10),
+            address: '',
+            phone: '',
+            lineId: ''
+        });
+
+        const confirmSample = () => {
+            profile.name = 'นางสาวกนกวรรณ พิทักษ์';
+            profile.idNumber = '9876543210987';
+            profile.address = 'หมู่ 8 ต.ทุ่งสุขลา อ.สนามชัยเขต จ.นครราชสีมา';
+            profile.phone = '088-456-1234';
+            profile.lineId = 'gnoon-farm';
+        };
+
+        const tabClass = (tab) => {
+            const base = 'px-3 py-2 rounded-xl transition flex items-center gap-1.5';
+            const active = 'bg-green-600 text-white shadow-sm';
+            const inactive = 'text-stone-600 hover:bg-stone-100';
+            return `${base} ${currentTab.value === tab ? active : inactive}`;
+        };
+
+        const exportJSON = function() {
+            const fileName = buildExportFileName.call(this, 'บัญชีฟาร์ม');
+            const blob = new Blob([JSON.stringify({ profile }, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${fileName}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        const exportWord = function() {
+            const fileName = buildExportFileName.call(this, 'บัญชีฟาร์ม');
+            html2pdf().set({
+                margin: 0.25,
+                filename: `${fileName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            }).from(document.getElementById('document-to-export')).save();
+        };
+
+        const exportPDF = function() {
+            const fileName = buildExportFileName.call(this, 'บัญชีฟาร์ม');
+            html2pdf().set({
+                margin: 0.25,
+                filename: `${fileName}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            }).from(document.getElementById('document-to-export')).save();
+        };
+
+        const triggerImport = () => fileInput.value?.click?.();
+        const importJSON = (event) => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.profile) Object.assign(profile, data.profile);
+                } catch (error) {
+                    console.error('Invalid JSON import', error);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        };
+
+        const printDocument = () => window.print();
+
+        return { currentTab, fileInput, activeImageModal, profile, tabClass, confirmSample, exportJSON, exportWord, exportPDF, triggerImport, importJSON, printDocument };
+    }
+});
+app.mount('#app');
+</script>
 </body>
 </html>
-
-
-
-
-
