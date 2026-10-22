@@ -17,6 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -116,8 +117,11 @@
                 <button @click="exportPDF" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-sm font-medium">
                     <i class="fa-solid fa-file-pdf"></i> <span>บันทึก PDF</span>
                 </button>
+                <button @click="exportExcel" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
+                    <i class="fa-solid fa-file-excel"></i> <span class="hidden md:inline">Excel</span>
+                </button>
                 <button @click="exportJSON" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
-                    <i class="fa-solid fa-download"></i> <span class="hidden md:inline">สำรอง JSON</span>
+                    <i class="fa-solid fa-download"></i> <span class="hidden md:inline">JSON</span>
                 </button>
                 <button @click="triggerImport" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition">
                     <i class="fa-solid fa-upload"></i> <span class="hidden md:inline">นำเข้า</span>
@@ -447,6 +451,31 @@
                 }).from(element).save();
             };
 
+            const exportExcel = function() {
+                const fileName = buildExportFileName.call(this, 'บัญชีสุขภาพ');
+                const rows = [
+                    ['หัวข้อ', 'ข้อมูล'],
+                    ['ชื่อ - สกุล', profile.fullName || ''],
+                    ['เลขประจำตัว', profile.idNumber || ''],
+                    ['อายุ', profile.age ? `${profile.age} ปี` : ''],
+                    ['เพศ', profile.gender || ''],
+                    ['วันที่เริ่มบันทึก', profile.startDate || ''],
+                    ['เบอร์โทรศัพท์', profile.phone || ''],
+                    ['ที่อยู่ปัจจุบัน', profile.address || ''],
+                    ['โรคประจำตัว / ปัญหาสุขภาพหลัก', profile.mainHealthIssues || '']
+                ];
+
+                const sheet = XLSX.utils.aoa_to_sheet(rows);
+                sheet['!cols'] = [
+                    { wch: 28 },
+                    { wch: 52 }
+                ];
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, sheet, 'ข้อมูลสุขภาพ');
+                XLSX.writeFile(workbook, `${fileName}.xlsx`);
+            };
+
             const exportJSON = function() {
                 const fileName = buildExportFileName.call(this, 'บัญชีสุขภาพ');
                 const jsonData = JSON.stringify({ profile: { ...profile } }, null, 2);
@@ -488,6 +517,7 @@
                 showToast,
                 exportWord,
                 exportPDF,
+                exportExcel,
                 exportJSON,
                 tabClass,
                 getScoreBadgeStyle,
