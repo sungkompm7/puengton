@@ -90,7 +90,7 @@
         </div>
     </div>
 
-    <div v-if="toast.show" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-teal-500/30 text-xs sm:text-sm animate-[fadeInUp_0.2s_ease]">
+    <div v-if="toast.show" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-teal-500/30 text-xs sm:text-sm animate-[fade...">
         <i :class="toast.icon || 'fa-solid fa-circle-info'" class="text-teal-400 text-lg"></i>
         <span>{{ toast.message }}</span>
     </div>
@@ -103,7 +103,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg sm:text-xl font-bold leading-tight">สมุดบันทึกบัญชีสุขภาพ (ยา 9 เม็ด & ทุกมิติ)</h1>
-                    <p class="text-xs text-teal-100 hidden sm:block">กสิกรรมไร้สารพิษและอาหาร เพื่อเศรษฐกิจและสุขภาวะพึ่งตน</p>
+                    <p class="text-xs text-teal-100 hidden sm:block">กสิกรรมไร้สารพิษและอาหาร เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ครอบคลุมทุกมิติของการดูแลสุขภาพ</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2 text-xs flex-wrap gap-y-1.5">
@@ -161,10 +161,10 @@
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
                 <div class="bg-gradient-to-r from-emerald-800 via-teal-700 to-emerald-900 rounded-2xl p-6 text-white mb-6 shadow-md relative overflow-hidden">
                     <div class="relative z-10 max-w-2xl">
-                        <span class="bg-emerald-500/30 text-emerald-100 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide border border-emerald-300/30">หลักสูตรการเรียนรู้และบันทึกชีวิต</span>
+                        <span class="bg-emerald-500/30 text-emerald-100 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wide border border-emerald-300/30">หลักสูตรกสิกรรมไร้สารพิษและอาหาร</span>
                         <h2 class="text-2xl sm:text-3xl font-extrabold mt-2 mb-2">กสิกรรมไร้สารพิษและอาหาร</h2>
-                        <p class="text-sm text-teal-100 leading-relaxed">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ครอบคลุมทุกมิติ</p>
-                        <blockquote class="mt-4 border-l-4 border-amber-400 pl-3 italic text-xs text-amber-100">“สุขภาพดี เริ่มต้นที่ตัวเรา พึ่งตน พึ่งธรรมชาติ พึ่งพอเพียง”</blockquote>
+                        <p class="text-sm text-teal-100 leading-relaxed">เพื่อเศรษฐกิจและสุขภาวะพึ่งตน ครอบคลุมทุกมิติของการดูแลสุขภาพตามหลักการกินดี อยู่ดี คิดดี ทำดี</p>
+                        <blockquote class="mt-4 border-l-4 border-amber-400 pl-3 italic text-xs text-amber-100">“สุขภาพดี เริ่มต้นที่ตัวเรา พึ่งตนตามหลักธรรมชาติและการดูแลอย่างยั่งยืน”</blockquote>
                     </div>
                     <div class="absolute -right-10 -bottom-10 opacity-15 text-[180px] pointer-events-none">
                         <i class="fa-solid fa-leaf"></i>
@@ -176,21 +176,21 @@
                         <i class="fa-solid fa-user-check text-teal-600"></i>
                         ข้อมูลผู้บันทึกสุขภาพ
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">บันทึกข้อมูลส่วนบุคคลเพื่อการติดตามผลการดูแลสุขภาพ</p>
+                    <p class="text-xs text-slate-500 mt-1">บันทึกข้อมูลส่วนบุคคลเพื่อการติดตามผลการดูแลสุขภาพและการประเมินประสิทธิภาพของการปฏิบัติ</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ - นามสกุล <span class="text-red-500">*</span></label>
-                        <input type="text" v-model="profile.fullName" placeholder="เช่น นายสมชาย สุขใจ" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                        <input type="text" v-model="profile.fullName" placeholder="เช่น นายสมชาย สุขใจ" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">เลขประจำตัว</label>
-                        <input type="text" v-model="profile.idNumber" placeholder="เช่น 1234567890123" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                        <input type="text" v-model="profile.idNumber" placeholder="เช่น 1234567890123" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">อายุ (ปี)</label>
-                        <input type="number" v-model="profile.age" placeholder="เช่น 45" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                        <input type="number" v-model="profile.age" placeholder="เช่น 45" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">เพศ</label>
@@ -207,17 +207,17 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์</label>
-                        <input type="tel" v-model="profile.phone" placeholder="08X-XXX-XXXX" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                        <input type="tel" v-model="profile.phone" placeholder="08X-XXX-XXXX" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white">
                     </div>
                     <div class="md:col-span-3">
                         <label class="block text-xs font-semibold text-slate-700 mb-1">ที่อยู่ปัจจุบัน</label>
-                        <input type="text" v-model="profile.address" placeholder="ระบุที่อยู่..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm">
+                        <input type="text" v-model="profile.address" placeholder="ระบุที่อยู่..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white">
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">โรคประจำตัว หรือ ปัญหาสุขภาพหลักที่ต้องติดตาม</label>
-                    <textarea v-model="profile.mainHealthIssues" rows="2" placeholder="เช่น ความดันโลหิตสูง, ไมเกรน, ภูมิแพ้, โรคประจำตัวอื่นๆ" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm"></textarea>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">โรคประจำตัว หรือ ปัญหาสุขภาพหลักที่ต้องเฝ้าระวัง</label>
+                    <textarea v-model="profile.mainHealthIssues" rows="2" placeholder="เช่น ความดันโลหิตสูง, ไมเกรน, ภูมิแพ้, โรคเบาหวาน" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-teal-500 outline-none text-sm bg-white"></textarea>
                 </div>
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
@@ -308,6 +308,8 @@
         return `${prefix}_${getRecorderName.call(this)}`;
     }
 
+    const STORAGE_KEY = 'puengton_health_profile_v1';
+
     const app = createApp({
         setup() {
             const currentTab = ref('profile');
@@ -326,6 +328,51 @@
                 mainHealthIssues: ''
             });
 
+            const saveProfileToStorage = () => {
+                try {
+                    const payload = { profile: { ...profile } };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+                } catch (error) {
+                    console.warn('Unable to save health profile', error);
+                }
+            };
+
+            const loadProfileFromStorage = () => {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (!raw) return;
+
+                    const parsed = JSON.parse(raw);
+                    const storedProfile = parsed && parsed.profile ? parsed.profile : parsed;
+
+                    Object.assign(profile, {
+                        fullName: '',
+                        idNumber: '',
+                        age: '',
+                        gender: '',
+                        startDate: new Date().toISOString().substr(0, 10),
+                        address: '',
+                        phone: '',
+                        mainHealthIssues: '',
+                        ...storedProfile
+                    });
+                } catch (error) {
+                    console.warn('Unable to load saved health profile', error);
+                }
+            };
+
+            watch(
+                () => ({ ...profile }),
+                () => {
+                    saveProfileToStorage();
+                },
+                { deep: true }
+            );
+
+            onMounted(() => {
+                loadProfileFromStorage();
+            });
+
             const confirmSample = () => {
                 profile.fullName = 'นายสมชาย สุขใจ';
                 profile.idNumber = '1234567890123';
@@ -335,6 +382,7 @@
                 profile.address = 'หมู่ 7 ต.ทุ่งน้อย อ.เมือง จ.อุบลราชธานี';
                 profile.phone = '0812345678';
                 profile.mainHealthIssues = 'ความดันโลหิตสูง, ภูมิแพ้';
+                saveProfileToStorage();
             };
 
             const triggerImport = () => fileInput.value && fileInput.value.click();
@@ -345,7 +393,19 @@
                 reader.onload = (e) => {
                     try {
                         const data = JSON.parse(e.target.result);
-                        Object.assign(profile, data.profile || {});
+                        const incomingProfile = data.profile || data;
+                        Object.assign(profile, {
+                            fullName: '',
+                            idNumber: '',
+                            age: '',
+                            gender: '',
+                            startDate: new Date().toISOString().substr(0, 10),
+                            address: '',
+                            phone: '',
+                            mainHealthIssues: '',
+                            ...incomingProfile
+                        });
+                        saveProfileToStorage();
                         showToast('นำเข้าข้อมูลเรียบร้อยแล้ว', 'fa-solid fa-circle-check');
                     } catch (error) {
                         showToast('ไฟล์ JSON ไม่ถูกต้อง', 'fa-solid fa-triangle-exclamation');
@@ -389,7 +449,7 @@
 
             const exportJSON = function() {
                 const fileName = buildExportFileName.call(this, 'บัญชีสุขภาพ');
-                const jsonData = JSON.stringify(this.$data, null, 2);
+                const jsonData = JSON.stringify({ profile: { ...profile } }, null, 2);
                 const blob = new Blob([jsonData], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
