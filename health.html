@@ -271,7 +271,7 @@
             </div>
         </div>
 
-        <!-- TAB: VITALS & PHYSICAL HEALTH (NEW DIMENSION) -->
+        <!-- TAB: VITALS & PHYSICAL HEALTH -->
         <div v-show="currentTab === 'vitals'" class="space-y-6">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
                 <div class="border-b border-slate-100 pb-4 mb-6">
@@ -389,7 +389,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: 3 HEALTH INDICATORS -->
+        <!-- TAB 3: 3 HEALTH INDICATORS (หน้า 2) -->
         <div v-show="currentTab === 'indicators'" class="space-y-6">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
                 <div class="border-b border-slate-100 pb-4 mb-6">
@@ -419,6 +419,20 @@
                             <i class="fa-solid fa-bolt"></i> มีกำลัง
                         </div>
                         <p class="text-slate-600">มีเรี่ยวแรงในการทำกิจวัตรประจำวันและการทำความดีได้อย่างต่อเนื่อง ไม่อ่อนเพลีย</p>
+                    </div>
+                </div>
+
+                <!-- เกณฑ์ประเมินระดับคะแนน 10 ระดับ (เพิ่มในหน้า 2) -->
+                <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-800 mb-2.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-scale-balanced text-amber-600"></i>
+                        เกณฑ์ประเมินระดับคะแนน 10 ระดับ (1 = น้อยที่สุด / แย่ที่สุด | 10 = ดีมากที่สุด / ผาสุกที่สุด)
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-2 text-center text-xs">
+                        <div v-for="score in 10" :key="score" class="p-2 rounded-xl border transition bg-white" :class="getScoreBadgeStyle(score)">
+                            <div class="font-bold text-xs mb-0.5">{{ score }}</div>
+                            <div class="text-[9px] leading-tight font-medium">{{ getScoreLabel(score) }}</div>
+                        </div>
                     </div>
                 </div>
 
@@ -466,7 +480,7 @@
             </div>
         </div>
 
-        <!-- TAB 4: HOLISTIC HEALTH (4 DOMAINS) -->
+        <!-- TAB 4: HOLISTIC HEALTH (4 DOMAINS) (หน้า 3) -->
         <div v-show="currentTab === 'holistic'" class="space-y-6">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
                 <div class="border-b border-slate-100 pb-4 mb-6">
@@ -475,6 +489,20 @@
                         3. แบบบันทึกผลของการปฏิบัติยา 9 เม็ดต่อสุขภาวะองค์รวม (4 ด้าน)
                     </h2>
                     <p class="text-xs text-slate-500 mt-1">ประเมินระดับคะแนน 1-10 พร้อมบันทึกข้อสังเกตถอดบทเรียนรายมิติ</p>
+                </div>
+
+                <!-- เกณฑ์ประเมินระดับคะแนน 10 ระดับ (เพิ่มในหน้า 3) -->
+                <div class="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-800 mb-2.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-scale-balanced text-purple-600"></i>
+                        เกณฑ์ประเมินระดับคะแนน 10 ระดับ (1 = น้อยที่สุด / แย่ที่สุด | 10 = ดีมากที่สุด / ผาสุกที่สุด)
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-2 text-center text-xs">
+                        <div v-for="score in 10" :key="score" class="p-2 rounded-xl border transition bg-white" :class="getScoreBadgeStyle(score)">
+                            <div class="font-bold text-xs mb-0.5">{{ score }}</div>
+                            <div class="text-[9px] leading-tight font-medium">{{ getScoreLabel(score) }}</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="space-y-8">
@@ -650,7 +678,7 @@
             </div>
         </div>
 
-        <!-- TAB: MONTHLY REFLECTIONS JOURNAL (NEW DIMENSION) -->
+        <!-- TAB: MONTHLY REFLECTIONS JOURNAL -->
         <div v-show="currentTab === 'journal'" class="space-y-6">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-8">
                 <div class="border-b border-slate-100 pb-4 mb-6">
@@ -942,6 +970,7 @@ const app = createApp({
         // Profile State
         const profile = reactive({
             fullName: '',
+            idNumber: '',
             age: '',
             gender: '',
             startDate: new Date().toISOString().substr(0, 10),
@@ -968,7 +997,7 @@ const app = createApp({
         });
         const vitalsNotes = ref('');
 
-        // 9 Pills definition according to document
+        // 9 Pills definition
         const med9Items = {
             p1: { id: 1, title: 'การดื่มน้ำสมุนไพรปรับสมดุล' },
             p2: { id: 2, title: 'การกัวซา' },
@@ -1011,7 +1040,6 @@ const app = createApp({
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
-                    // Resize image to max 600px width/height for optimized storage
                     const canvas = document.createElement('canvas');
                     let width = img.width;
                     let height = img.height;
@@ -1173,11 +1201,27 @@ const app = createApp({
             indicatorsData.vitality = { before: 3, m1: 4, m2: 6, m3: 7, m4: 8, m5: 9, m6: 10 };
 
             // Holistic sample
-            if (holisticData.mental[0]) holisticData.mental[0] = { before: 8, m1: 6, m2: 5, m3: 4, m4: 3, m5: 2, m6: 2 };
-            if (holisticData.mental[4]) holisticData.mental[4] = { before: 3, m1: 5, m2: 6, m3: 8, m4: 9, m5: 9, m6: 10 };
-            if (holisticData.spiritual[0]) holisticData.spiritual[0] = { before: 4, m1: 5, m2: 7, m3: 8, m4: 9, m5: 9, m6: 10 };
-            if (holisticData.social[0]) holisticData.social[0] = { before: 5, m1: 6, m2: 7, m3: 8, m4: 9, m5: 9, m6: 10 };
-            if (holisticData.economic[3]) holisticData.economic[3] = { before: 4, m1: 5, m2: 7, m3: 8, m4: 9, m5: 9, m6: 10 };
+            holisticData.mental.forEach((item, idx) => {
+                item.before = idx < 4 ? 8 : 3;
+                item.m1 = idx < 4 ? 7 : 4;
+                item.m2 = idx < 4 ? 6 : 5;
+                item.m3 = idx < 4 ? 5 : 7;
+                item.m4 = idx < 4 ? 4 : 8;
+                item.m5 = idx < 4 ? 3 : 9;
+                item.m6 = idx < 4 ? 2 : 10;
+            });
+
+            holisticData.spiritual.forEach((item) => {
+                item.before = 4; item.m1 = 5; item.m2 = 6; item.m3 = 7; item.m4 = 8; item.m5 = 9; item.m6 = 10;
+            });
+
+            holisticData.social.forEach((item) => {
+                item.before = 5; item.m1 = 6; item.m2 = 7; item.m3 = 8; item.m4 = 8; item.m5 = 9; item.m6 = 9;
+            });
+
+            holisticData.economic.forEach((item) => {
+                item.before = 4; item.m1 = 5; item.m2 = 6; item.m3 = 7; item.m4 = 8; item.m5 = 9; item.m6 = 10;
+            });
 
             holisticDimensionNotes.mental = 'ควบคุมอารมณ์ได้ดีขึ้น ไม่ฉุนเฉียวเมื่อเจอสิ่งไม่ได้ดังใจ';
             holisticDimensionNotes.spiritual = 'ปล่อยวางเรื่องราวภายนอกได้ง่ายขึ้น จิตใจสงบและผาสุก';
@@ -1291,6 +1335,9 @@ const app = createApp({
                     if (data.holisticNotes !== undefined) holisticNotes.value = data.holisticNotes;
                     if (data.journalData) Object.assign(journalData, data.journalData);
                     showToast('นำเข้าข้อมูลสุขภาพเรียบร้อยแล้ว!');
+                    if (currentTab.value === 'analytics') {
+                        nextTick(() => renderCharts());
+                    }
                 } catch (err) {
                     showToast('รูปแบบไฟล์ JSON ไม่ถูกต้อง', 'fa-solid fa-triangle-exclamation');
                 }
@@ -1309,13 +1356,13 @@ const app = createApp({
 
                 const months = ['ก่อน', 'เดือน 1', 'เดือน 2', 'เดือน 3', 'เดือน 4', 'เดือน 5', 'เดือน 6'];
                 const getDataArr = (key) => [
-                    indicatorsData[key]?.before || 0,
-                    indicatorsData[key]?.m1 || 0,
-                    indicatorsData[key]?.m2 || 0,
-                    indicatorsData[key]?.m3 || 0,
-                    indicatorsData[key]?.m4 || 0,
-                    indicatorsData[key]?.m5 || 0,
-                    indicatorsData[key]?.m6 || 0
+                    parseFloat(indicatorsData[key]?.before) || 0,
+                    parseFloat(indicatorsData[key]?.m1) || 0,
+                    parseFloat(indicatorsData[key]?.m2) || 0,
+                    parseFloat(indicatorsData[key]?.m3) || 0,
+                    parseFloat(indicatorsData[key]?.m4) || 0,
+                    parseFloat(indicatorsData[key]?.m5) || 0,
+                    parseFloat(indicatorsData[key]?.m6) || 0
                 ];
 
                 indicatorsChartInstance = new Chart(ctx1, {
@@ -1323,15 +1370,15 @@ const app = createApp({
                     data: {
                         labels: months,
                         datasets: [
-                            { label: 'ความสบาย', data: getDataArr('comfort'), borderColor: '#059669', backgroundColor: '#05966922', tension: 0.3 },
-                            { label: 'ความเบากาย', data: getDataArr('lightness'), borderColor: '#0d9488', backgroundColor: '#0d948822', tension: 0.3 },
-                            { label: 'ความมีกำลัง', data: getDataArr('vitality'), borderColor: '#d97706', backgroundColor: '#d9770622', tension: 0.3 }
+                            { label: 'ความสบาย', data: getDataArr('comfort'), borderColor: '#059669', backgroundColor: '#05966922', tension: 0.3, fill: true },
+                            { label: 'ความเบากาย', data: getDataArr('lightness'), borderColor: '#0d9488', backgroundColor: '#0d948822', tension: 0.3, fill: true },
+                            { label: 'ความมีกำลัง', data: getDataArr('vitality'), borderColor: '#d97706', backgroundColor: '#d9770622', tension: 0.3, fill: true }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { y: { min: 0, max: 10 } }
+                        scales: { y: { min: 0, max: 10, ticks: { stepSize: 1 } } }
                     }
                 });
             }
@@ -1342,9 +1389,9 @@ const app = createApp({
                 if (holisticChartInstance) holisticChartInstance.destroy();
 
                 const getAvg = (arr, field) => {
-                    if (!Array.isArray(arr)) return 0;
+                    if (!Array.isArray(arr) || arr.length === 0) return 0;
                     const valid = arr.map(i => parseFloat(i?.[field]) || 0).filter(v => v > 0);
-                    return valid.length ? (valid.reduce((a,b) => a+b, 0) / valid.length) : 0;
+                    return valid.length ? Number((valid.reduce((a,b) => a+b, 0) / valid.length).toFixed(2)) : 0;
                 };
 
                 const beforeScores = [
@@ -1366,14 +1413,14 @@ const app = createApp({
                     data: {
                         labels: ['จิตใจ', 'จิตวิญญาณ', 'สังคม', 'เศรษฐกิจ'],
                         datasets: [
-                            { label: 'ก่อนเรียนรู้', data: beforeScores, borderColor: '#f59e0b', backgroundColor: '#f59e0b33' },
-                            { label: 'เดือนที่ 6', data: month6Scores, borderColor: '#10b981', backgroundColor: '#10b98133' }
+                            { label: 'ก่อนเรียนรู้', data: beforeScores, borderColor: '#f59e0b', backgroundColor: '#f59e0b33', pointBackgroundColor: '#f59e0b' },
+                            { label: 'เดือนที่ 6', data: month6Scores, borderColor: '#10b981', backgroundColor: '#10b98133', pointBackgroundColor: '#10b981' }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { r: { min: 0, max: 10 } }
+                        scales: { r: { min: 0, max: 10, ticks: { stepSize: 2 } } }
                     }
                 });
             }
